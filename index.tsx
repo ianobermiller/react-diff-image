@@ -36,7 +36,6 @@ export const NEW_COLOR = "rgb(0, 102, 68)";
 const OLD_BG = "rgb(255, 235, 230)";
 const NEW_BG = "rgb(227, 252, 239)";
 const BORDER_WIDTH = 2;
-const DEFAULT_SIZE = { height: 1080, width: 1920 };
 
 export function ImageDiff({
     mode = DEFAULT_PROPS.mode,
@@ -68,7 +67,7 @@ export function ImageDiff({
 
     const overlayUrl = useMemo(() => (showOverlay ? getOverlay(img) : undefined), [showOverlay, img]);
 
-    if (!maxWidth && !showFullSize)
+    if (!img || (!maxWidth && !showFullSize)) {
         return (
             <div
                 ref={(div) => {
@@ -79,8 +78,9 @@ export function ImageDiff({
                 style={{ alignSelf: "stretch", flexGrow: 1 }}
             />
         );
+    }
 
-    const size = img ? { height: img.naturalHeight, width: img.naturalWidth / 3 } : DEFAULT_SIZE;
+    const size = { height: img.naturalHeight, width: img.naturalWidth / 3 };
 
     const targetWidth = maxWidth
         ? mode === "side-by-side"
