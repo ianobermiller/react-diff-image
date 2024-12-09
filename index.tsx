@@ -1,7 +1,3 @@
-/**
- * This file is shared between `tvui-vscode` and `netflix-build-checks`
- */
-
 import type { CSSProperties, ReactNode } from "react";
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
