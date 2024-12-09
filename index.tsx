@@ -12,6 +12,7 @@ interface Props {
     /** Show an overlay to highlight small differences between the old and new images */
     showOverlay: boolean;
 }
+export { Props as ImageDiffProps };
 
 export type ImageDiffMode = "blend" | "pixel-diff" | "side-by-side" | "split";
 
