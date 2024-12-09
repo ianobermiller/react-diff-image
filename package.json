@@ -1,0 +1,35 @@
+{
+    "name": "react-diff-image",
+    "version": "1.0.0",
+    "description": "Zero-dependency component for multi-modal image comparison and review.",
+    "main": "index.tsx",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ianobermiller/react-diff-image.git"
+    },
+    "keywords": [
+        "react",
+        "image",
+        "comparison",
+        "compare",
+        "diff"
+    ],
+    "author": "Ian Obermiller <ian@obermillers.com>",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/ianobermiller/react-diff-image/issues"
+    },
+    "homepage": "https://github.com/ianobermiller/react-diff-image#readme",
+    "devDependencies": {
+        "@types/react": "^19.0.1",
+        "@types/react-dom": "^19.0.1",
+        "prettier": "^3.4.2",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "tsup": "^8.3.5",
+        "typescript": "^5.7.2"
+    },
+    "peerDependencies": {
+        "react": "^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    }
+}
