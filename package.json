@@ -28,7 +28,7 @@
         "review"
     ],
     "author": "Ian Obermiller <ian@obermillers.com>",
-    "license": "ISC",
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/ianobermiller/react-diff-image/issues"
     },
