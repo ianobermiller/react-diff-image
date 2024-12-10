@@ -51,6 +51,7 @@ export function ImageDiff({
 
         const resizeObserver = new ResizeObserver(([entry]) => {
             if (entry) {
+                console.log(entry.contentRect.width);
                 setMaxWidth(entry.contentRect.width);
             }
         });
@@ -64,20 +65,7 @@ export function ImageDiff({
 
     const overlayUrl = useMemo(() => (showOverlay ? getOverlay(img, OVERLAY_COLOR) : undefined), [showOverlay, img]);
 
-    if (!img || (!maxWidth && !showFullSize)) {
-        return (
-            <div
-                ref={(div) => {
-                    if (div?.clientWidth) {
-                        setMaxWidth(Math.floor(div.clientWidth));
-                    }
-                }}
-                style={{ alignSelf: "stretch", flexGrow: 1 }}
-            />
-        );
-    }
-
-    const size = { height: img.naturalHeight, width: img.naturalWidth / 3 };
+    const size = img ? { height: img.naturalHeight, width: img.naturalWidth / 3 } : { height: 0, width: 0 };
 
     const targetWidth = maxWidth
         ? mode === "side-by-side"
@@ -108,7 +96,7 @@ export function ImageDiff({
     }
 
     return (
-        <div ref={rootRef} style={{ alignSelf: "stretch", flexGrow: 1, maxWidth: "100%" }}>
+        <div ref={rootRef} style={{ alignSelf: "stretch", flexGrow: 1, maxWidth: "100%", overflow: "hidden" }}>
             {comparison}
         </div>
     );
