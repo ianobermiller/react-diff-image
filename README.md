@@ -47,3 +47,20 @@ By default the component will reponsively fit the image into the container size.
 Defaults to true. Shows an orange divider line between the old and new images in `split` mode. Set to `false` to hide.
 
 ![no divider](images/no-divider.webp)
+
+## Building
+
+```sh
+npm run build
+```
+
+## Demo
+
+Since `ImageDiff` does not include any configuration controls, the demo is a simple showcase of the modes and options.
+
+```sh
+npm run demo:watch
+# another terminal
+npm run demo:serve
+# open http://localhost:3000
+```
