@@ -11,7 +11,7 @@ function App() {
     const [config, setConfig] = useState<Omit<ImageDiffProps, "url">>(DEFAULT_PROPS);
     return (
         <div>
-            <div style={{ marginBottom: 20, display: "flex", gap: 20 }}>
+            <div style={{ marginBottom: 20, display: "flex", gap: 20, whiteSpace: "nowrap", flexWrap: "wrap" }}>
                 {MODES.map(({ label, value }) => (
                     <label key={value}>
                         <input
