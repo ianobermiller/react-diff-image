@@ -1,4 +1,5 @@
-# Ignore artifacts:
 dist
 dist-demo
 node_modules
+images/*.png
+.DS_Store
