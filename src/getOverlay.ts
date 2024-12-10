@@ -43,8 +43,7 @@ export function getOverlay(img: HTMLImageElement | undefined, color: string): st
 
             // In the diff image, the original is rendered in grayscale with red for differing pixels and yellow for
             // "anti-aliased" pixels, or pixels that are only different by a small amount.
-            const isGrayscale = r === g && g === b;
-            if (!isGrayscale) {
+            if (!isAlmostGrayscale(r, g, b)) {
                 // circle around the pixel
                 overlayCtx.moveTo(x, y);
                 overlayCtx.arc(x, y, 19, 0, Math.PI * 2);
@@ -56,4 +55,8 @@ export function getOverlay(img: HTMLImageElement | undefined, color: string): st
     overlayCtx.fill();
 
     return overlayCanvas.toDataURL("image/webp", 1);
+}
+
+function isAlmostGrayscale(r: number, g: number, b: number): boolean {
+    return Math.abs(r - g) < 10 && Math.abs(g - b) < 10 && Math.abs(b - r) < 10;
 }
