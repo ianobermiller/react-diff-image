@@ -1,3 +1,6 @@
+/** Diameter of a circle drawn around a differing pixel. Should be odd to avoid aliasing. */
+const OVERLAY_SIZE = 19;
+
 /**
  * Given the three-part image, analyze the center image (the diff) and create a transparent overlay that highlights all
  * the changed pixels.
@@ -9,7 +12,6 @@ export function getOverlay(img: HTMLImageElement | undefined, color: string): st
     const overlayCtx = overlayCanvas.getContext("2d");
     if (!overlayCtx) return;
 
-    // load the image and get the size
     overlayCanvas.width = img.naturalWidth / 3;
     overlayCanvas.height = img.naturalHeight;
 
@@ -46,7 +48,7 @@ export function getOverlay(img: HTMLImageElement | undefined, color: string): st
             if (!isAlmostGrayscale(r, g, b)) {
                 // circle around the pixel
                 overlayCtx.moveTo(x, y);
-                overlayCtx.arc(x, y, 19, 0, Math.PI * 2);
+                overlayCtx.arc(x, y, OVERLAY_SIZE, 0, Math.PI * 2);
             }
         }
     }
@@ -57,6 +59,13 @@ export function getOverlay(img: HTMLImageElement | undefined, color: string): st
     return overlayCanvas.toDataURL("image/webp", 1);
 }
 
+/** If the channels are within this threshold, consider the color to be grayscale. */
+const GRAYSCALE_THRESHOLD = 10;
+
 function isAlmostGrayscale(r: number, g: number, b: number): boolean {
-    return Math.abs(r - g) < 10 && Math.abs(g - b) < 10 && Math.abs(b - r) < 10;
+    return (
+        Math.abs(r - g) < GRAYSCALE_THRESHOLD &&
+        Math.abs(g - b) < GRAYSCALE_THRESHOLD &&
+        Math.abs(b - r) < GRAYSCALE_THRESHOLD
+    );
 }
