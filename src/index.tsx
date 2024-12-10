@@ -51,7 +51,6 @@ export function ImageDiff({
 
         const resizeObserver = new ResizeObserver(([entry]) => {
             if (entry) {
-                console.log(entry.contentRect.width);
                 setMaxWidth(entry.contentRect.width);
             }
         });
