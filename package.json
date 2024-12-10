@@ -46,6 +46,10 @@
         "react": "^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
     },
     "scripts": {
-        "build": "tsup"
+        "build": "tsup",
+        "demo:build": "tsup --config tsup-demo.config.ts",
+        "demo:watch": "tsup --config tsup-demo.config.ts --watch",
+        "demo:serve": "npx serve dist-demo",
+        "tsc": "tsc"
     }
 }
