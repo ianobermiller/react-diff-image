@@ -3,7 +3,8 @@
     "version": "1.0.1",
     "description": "Zero-dependency component for multi-modal image comparison and review.",
     "files": [
-        "dist"
+        "dist",
+        "images"
     ],
     "exports": {
         ".": {
