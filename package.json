@@ -51,6 +51,7 @@
         "demo:build": "tsup --config tsup-demo.config.ts",
         "demo:watch": "tsup --config tsup-demo.config.ts --watch",
         "demo:serve": "npx serve dist-demo",
-        "tsc": "tsc"
+        "tsc": "tsc",
+        "prepublishOnly": "npm run build && npm run tsc"
     }
 }
