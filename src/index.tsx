@@ -95,7 +95,10 @@ export function ImageDiff({
     }
 
     return (
-        <div ref={rootRef} style={{ alignSelf: "stretch", flexGrow: 1, maxWidth: "100%", overflow: "hidden" }}>
+        <div
+            ref={rootRef}
+            style={{ alignSelf: "stretch", flexGrow: 1, maxWidth: "100%", overflow: showFullSize ? "auto" : "hidden" }}
+        >
             {comparison}
         </div>
     );
