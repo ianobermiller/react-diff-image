@@ -1,16 +1,12 @@
-import { BORDER_WIDTH } from "./constants";
-import type { ImageSize } from "./types";
+import { BORDER_WIDTH, PADDING } from "./constants";
+import type { ModeProps } from "./types";
 
-export function OverlayImage({
-    overlayUrl,
-    scale,
-    size,
-}: {
-    overlayUrl: string | undefined;
-    scale: number;
-    size: ImageSize;
-}) {
+interface Props extends Pick<ModeProps, "scale" | "size" | "overlayUrl" | "hasPadding"> {}
+
+export function OverlayImage({ hasPadding, overlayUrl, scale, size }: Props) {
     if (!overlayUrl) return null;
+
+    const padding = hasPadding ? PADDING : 0;
 
     return (
         <div
@@ -18,9 +14,9 @@ export function OverlayImage({
                 backgroundImage: `url(${overlayUrl})`,
                 backgroundSize: `${size.width}px ${size.height}px`,
                 height: size.height,
-                left: BORDER_WIDTH,
+                left: BORDER_WIDTH + padding,
                 position: "absolute",
-                top: BORDER_WIDTH,
+                top: BORDER_WIDTH + padding,
                 transform: `scale(${scale})`,
                 transformOrigin: "top left",
                 width: size.width,

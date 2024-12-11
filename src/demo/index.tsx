@@ -47,6 +47,14 @@ function App() {
                     />{" "}
                     Show overlay
                 </label>
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={config.hasPadding}
+                        onChange={() => setConfig((prev) => ({ ...prev, hasPadding: !prev.hasPadding }))}
+                    />{" "}
+                    Padding
+                </label>
             </div>
 
             <ImageDiff {...config} url="/diff.webp" />

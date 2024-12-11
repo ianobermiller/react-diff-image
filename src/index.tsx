@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
-import { BORDER_WIDTH, MODES, NEW_COLOR, OLD_COLOR, OVERLAY_COLOR } from "./constants";
+import { BORDER_WIDTH, MODES, NEW_COLOR, OLD_COLOR, OVERLAY_COLOR, PADDING } from "./constants";
 import { getOverlay } from "./getOverlay";
 import { PixelDiff } from "./PixelDiff";
 import { SIDE_BY_SIDE_GAP, SideBySide } from "./SideBySide";
@@ -19,6 +19,8 @@ interface Props {
     showFullSize?: boolean;
     /** Show an overlay to highlight small differences between the old and new images */
     showOverlay?: boolean;
+    /** Add padding inside the image to better see the edges. */
+    hasPadding?: boolean;
 }
 
 export { Props as ImageDiffProps };
@@ -28,6 +30,7 @@ export const DEFAULT_PROPS = {
     showDivider: true,
     showFullSize: false,
     showOverlay: false,
+    hasPadding: false,
 } satisfies Partial<Props>;
 
 export type { ImageDiffMode };
@@ -39,6 +42,7 @@ export function ImageDiff({
     showDivider = DEFAULT_PROPS.showDivider,
     showFullSize = DEFAULT_PROPS.showFullSize,
     showOverlay = DEFAULT_PROPS.showOverlay,
+    hasPadding = DEFAULT_PROPS.hasPadding,
     url,
 }: Props) {
     const rootRef = useRef<HTMLDivElement>(null);
@@ -68,8 +72,8 @@ export function ImageDiff({
 
     const targetWidth = maxWidth
         ? mode === "side-by-side"
-            ? Math.floor((maxWidth - BORDER_WIDTH * 4 - SIDE_BY_SIDE_GAP) / 2)
-            : maxWidth - BORDER_WIDTH * 2
+            ? Math.floor((maxWidth - BORDER_WIDTH * 4 - (hasPadding ? PADDING * 4 : 0) - SIDE_BY_SIDE_GAP) / 2)
+            : maxWidth - BORDER_WIDTH * 2 - (hasPadding ? PADDING * 2 : 0)
         : null;
 
     const scale = targetWidth ? Math.min(1, targetWidth / size.width) : 1;
@@ -78,19 +82,38 @@ export function ImageDiff({
     let comparison: ReactNode;
     switch (mode) {
         case "blend":
-            comparison = <Blend overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />;
+            comparison = (
+                <Blend overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} hasPadding={hasPadding} />
+            );
             break;
         case "side-by-side":
-            comparison = <SideBySide overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />;
+            comparison = (
+                <SideBySide
+                    overlayUrl={overlayUrl}
+                    scale={appliedScale}
+                    size={size}
+                    url={url}
+                    hasPadding={hasPadding}
+                />
+            );
             break;
         case "split":
             comparison = (
-                <Split showDivider={showDivider} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
+                <Split
+                    showDivider={showDivider}
+                    overlayUrl={overlayUrl}
+                    scale={appliedScale}
+                    size={size}
+                    url={url}
+                    hasPadding={hasPadding}
+                />
             );
             break;
         case "pixel-diff":
         default:
-            comparison = <PixelDiff overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />;
+            comparison = (
+                <PixelDiff overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} hasPadding={hasPadding} />
+            );
             break;
     }
 

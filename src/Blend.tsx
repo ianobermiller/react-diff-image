@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { BORDER_WIDTH, OLD_BG, OLD_COLOR, NEW_BG, NEW_COLOR } from "./constants";
-import { DiffImage } from "./DiffImage";
+import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
+import { DiffImage, getDiffImageSize } from "./DiffImage";
 import { OverlayImage } from "./OverlayImage";
 import { Tag } from "./Tag";
 import { ModeProps } from "./types";
 
-export function Blend({ overlayUrl, scale, size, url }: ModeProps) {
+export function Blend({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
     const [percentage, setPercentage] = useState(0.5);
-    const diffImageWidth = size.width * scale + BORDER_WIDTH * 2;
+    const diffImageSize = getDiffImageSize({ scale, size, hasPadding });
 
     return (
-        <div style={{ width: diffImageWidth }}>
+        <div style={{ width: diffImageSize.width }}>
             <div
                 style={{
                     alignItems: "center",
@@ -35,16 +35,18 @@ export function Blend({ overlayUrl, scale, size, url }: ModeProps) {
                 </Tag>
             </div>
 
-            <div
-                style={{
-                    height: size.height + BORDER_WIDTH * 2,
-                    position: "relative",
-                    width: size.width + BORDER_WIDTH * 2,
-                }}
-            >
-                <DiffImage scale={scale} size={size} style={{ position: "absolute" }} type="old" url={url} />
+            <div style={{ ...diffImageSize, position: "relative" }}>
+                <DiffImage
+                    hasPadding={hasPadding}
+                    scale={scale}
+                    size={size}
+                    style={{ position: "absolute" }}
+                    type="old"
+                    url={url}
+                />
 
                 <DiffImage
+                    hasPadding={hasPadding}
                     scale={scale}
                     size={size}
                     style={{ opacity: percentage, position: "absolute" }}
@@ -52,7 +54,7 @@ export function Blend({ overlayUrl, scale, size, url }: ModeProps) {
                     url={url}
                 />
 
-                <OverlayImage overlayUrl={overlayUrl} scale={scale} size={size} />
+                <OverlayImage hasPadding={hasPadding} overlayUrl={overlayUrl} scale={scale} size={size} />
             </div>
         </div>
     );

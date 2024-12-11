@@ -13,4 +13,6 @@ export const OVERLAY_COLOR = "rgba(255, 0, 255, 0.5)";
 
 export const OLD_BG = "rgb(255, 235, 230)";
 export const NEW_BG = "rgb(227, 252, 239)";
+
 export const BORDER_WIDTH = 2;
+export const PADDING = 20;

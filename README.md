@@ -38,7 +38,7 @@ Generate a magenta overlay to highlight small changes.
 
 ### `showFullSize`
 
-By default the component will reponsively fit the image into the container size. Set `showFullSize` to `true` to display the image at its full size.
+By default the component will responsively fit the image into the container size. Set `showFullSize` to `true` to display the image at its full size.
 
 ![full size](images/full-size.webp)
 
@@ -47,6 +47,12 @@ By default the component will reponsively fit the image into the container size.
 Defaults to true. Shows an orange divider line between the old and new images in `split` mode. Set to `false` to hide.
 
 ![no divider](images/no-divider.webp)
+
+### `hasPadding`
+
+Defaults to false. Adds padding around the images with a standard checkerboard pattern. Makes it easier to see the edges of the images.
+
+![padding](images/padding.webp)
 
 ## Building
 

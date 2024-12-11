@@ -10,4 +10,5 @@ export interface ModeProps {
     scale: number;
     size: ImageSize;
     url: string;
+    hasPadding: boolean;
 }

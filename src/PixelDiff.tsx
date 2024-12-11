@@ -2,12 +2,12 @@ import { DiffImage } from "./DiffImage";
 import { OverlayImage } from "./OverlayImage";
 import { ModeProps } from "./types";
 
-export function PixelDiff({ overlayUrl, scale, size, url }: ModeProps) {
+export function PixelDiff({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
     return (
         <div style={{ position: "relative" }}>
-            <DiffImage scale={scale} size={size} type="diff" url={url} />
+            <DiffImage hasPadding={hasPadding} scale={scale} size={size} type="diff" url={url} />
 
-            <OverlayImage overlayUrl={overlayUrl} scale={scale} size={size} />
+            <OverlayImage hasPadding={hasPadding} overlayUrl={overlayUrl} scale={scale} size={size} />
         </div>
     );
 }

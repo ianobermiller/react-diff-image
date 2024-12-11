@@ -1,23 +1,22 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 
 import { clamp } from "./clamp";
-import { BORDER_WIDTH, OLD_BG, OLD_COLOR, NEW_BG, NEW_COLOR } from "./constants";
-import { DiffImage } from "./DiffImage";
+import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
+import { DiffImage, getDiffImageSize } from "./DiffImage";
 import { OverlayImage } from "./OverlayImage";
 import { Tag } from "./Tag";
 import { ModeProps } from "./types";
 
-export function Split({ showDivider, overlayUrl, scale, size, url }: ModeProps & { showDivider: boolean }) {
+export function Split({ hasPadding, overlayUrl, showDivider, scale, size, url }: ModeProps & { showDivider: boolean }) {
     const [percentage, setPercentage] = useState(0.5);
-    const diffImageWidth = size.width * scale + BORDER_WIDTH * 2;
-    const diffImageHeight = size.height * scale + BORDER_WIDTH * 2;
+    const diffImageSize = getDiffImageSize({ scale, size, hasPadding });
 
     const handleMouseMove = useCallback(
         (e: React.MouseEvent<HTMLDivElement>): void => {
             const delta = e.clientX - e.currentTarget.getBoundingClientRect().x;
-            return setPercentage(delta / diffImageWidth);
+            return setPercentage(delta / diffImageSize.width);
         },
-        [diffImageWidth],
+        [diffImageSize.width],
     );
 
     return (
@@ -26,7 +25,7 @@ export function Split({ showDivider, overlayUrl, scale, size, url }: ModeProps &
                 display: "flex",
                 flexDirection: "column",
                 gap: 12,
-                width: diffImageWidth,
+                width: diffImageSize.width,
             }}
         >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -38,15 +37,9 @@ export function Split({ showDivider, overlayUrl, scale, size, url }: ModeProps &
                 </Tag>
             </div>
 
-            <div
-                onMouseMove={handleMouseMove}
-                style={{
-                    height: diffImageHeight,
-                    position: "relative",
-                    width: diffImageWidth,
-                }}
-            >
+            <div onMouseMove={handleMouseMove} style={{ ...diffImageSize, position: "relative" }}>
                 <DiffImage
+                    hasPadding={hasPadding}
                     scale={scale}
                     size={size}
                     style={{
@@ -59,6 +52,7 @@ export function Split({ showDivider, overlayUrl, scale, size, url }: ModeProps &
                 />
 
                 <DiffImage
+                    hasPadding={hasPadding}
                     scale={scale}
                     size={size}
                     style={{
@@ -70,7 +64,7 @@ export function Split({ showDivider, overlayUrl, scale, size, url }: ModeProps &
                     url={url}
                 />
 
-                <OverlayImage overlayUrl={overlayUrl} scale={scale} size={size} />
+                <OverlayImage hasPadding={hasPadding} overlayUrl={overlayUrl} scale={scale} size={size} />
 
                 {showDivider && (
                     <div
