@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
 import { DiffImage, getDiffImageSize } from "./DiffImage";
 import { OverlayImage } from "./OverlayImage";
@@ -7,7 +8,7 @@ import { ModeProps } from "./types";
 
 export function Blend({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
     const [percentage, setPercentage] = useState(0.5);
-    const diffImageSize = getDiffImageSize({ scale, size, hasPadding });
+    const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
 
     return (
         <div style={{ width: diffImageSize.width }}>
@@ -25,7 +26,9 @@ export function Blend({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
                 </Tag>
 
                 <input
-                    onInput={(e) => setPercentage(Number(e.currentTarget.value) / 100)}
+                    onInput={(e) => {
+                        setPercentage(Number(e.currentTarget.value) / 100);
+                    }}
                     style={{ width: 300 }}
                     type="range"
                 />

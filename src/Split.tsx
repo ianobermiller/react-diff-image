@@ -7,14 +7,14 @@ import { OverlayImage } from "./OverlayImage";
 import { Tag } from "./Tag";
 import { ModeProps } from "./types";
 
-export function Split({ hasPadding, overlayUrl, showDivider, scale, size, url }: ModeProps & { showDivider: boolean }) {
+export function Split({ hasPadding, overlayUrl, scale, showDivider, size, url }: ModeProps & { showDivider: boolean }) {
     const [percentage, setPercentage] = useState(0.5);
-    const diffImageSize = getDiffImageSize({ scale, size, hasPadding });
+    const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
 
     const handleMouseMove = useCallback(
         (e: React.MouseEvent<HTMLDivElement>): void => {
             const delta = e.clientX - e.currentTarget.getBoundingClientRect().x;
-            return setPercentage(delta / diffImageSize.width);
+            setPercentage(delta / diffImageSize.width);
         },
         [diffImageSize.width],
     );

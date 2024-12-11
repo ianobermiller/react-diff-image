@@ -2,13 +2,13 @@ import { defineConfig } from "tsup";
 
 export default defineConfig({
     entry: ["src/demo/index.tsx"],
-    format: "esm",
-    sourcemap: true,
-    target: "es2020",
-    outDir: "dist-demo",
-    noExternal: ["react", "react-dom"],
     env: {
         NODE_ENV: "development",
     },
+    format: "esm",
+    noExternal: ["react", "react-dom"],
+    outDir: "dist-demo",
     publicDir: "src/demo/public",
+    sourcemap: true,
+    target: "es2020",
 });

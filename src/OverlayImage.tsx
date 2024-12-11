@@ -1,7 +1,8 @@
-import { BORDER_WIDTH, PADDING } from "./constants";
 import type { ModeProps } from "./types";
 
-interface Props extends Pick<ModeProps, "scale" | "size" | "overlayUrl" | "hasPadding"> {}
+import { BORDER_WIDTH, PADDING } from "./constants";
+
+interface Props extends Pick<ModeProps, "hasPadding" | "overlayUrl" | "scale" | "size"> {}
 
 export function OverlayImage({ hasPadding, overlayUrl, scale, size }: Props) {
     if (!overlayUrl) return null;

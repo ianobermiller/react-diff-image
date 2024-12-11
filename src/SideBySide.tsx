@@ -7,7 +7,7 @@ import { ModeProps } from "./types";
 export const SIDE_BY_SIDE_GAP = 12;
 
 export function SideBySide({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
-    const diffImageSize = getDiffImageSize({ scale, size, hasPadding });
+    const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
 
     return (
         <div style={{ width: diffImageSize.width * 2 + SIDE_BY_SIDE_GAP }}>

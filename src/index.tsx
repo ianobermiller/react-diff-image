@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
+
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
+
+import { Blend } from "./Blend";
 import { BORDER_WIDTH, MODES, NEW_COLOR, OLD_COLOR, OVERLAY_COLOR, PADDING } from "./constants";
 import { getOverlay } from "./getOverlay";
 import { PixelDiff } from "./PixelDiff";
@@ -7,11 +10,10 @@ import { SIDE_BY_SIDE_GAP, SideBySide } from "./SideBySide";
 import { Split } from "./Split";
 import { ImageDiffMode } from "./types";
 import { useImage } from "./useImage";
-import { Blend } from "./Blend";
 
 interface Props {
-    /** Image with old-diff-new concatenated horizontally in that order. */
-    url: string;
+    /** Add padding inside the image to better see the edges. */
+    hasPadding?: boolean;
     mode?: ImageDiffMode;
     /** Show the divider in `split` mode */
     showDivider?: boolean;
@@ -19,18 +21,18 @@ interface Props {
     showFullSize?: boolean;
     /** Show an overlay to highlight small differences between the old and new images */
     showOverlay?: boolean;
-    /** Add padding inside the image to better see the edges. */
-    hasPadding?: boolean;
+    /** Image with old-diff-new concatenated horizontally in that order. */
+    url: string;
 }
 
 export { Props as ImageDiffProps };
 
 export const DEFAULT_PROPS = {
+    hasPadding: false,
     mode: "split",
     showDivider: true,
     showFullSize: false,
     showOverlay: false,
-    hasPadding: false,
 } satisfies Partial<Props>;
 
 export type { ImageDiffMode };
@@ -38,11 +40,11 @@ export type { ImageDiffMode };
 export { MODES, NEW_COLOR, OLD_COLOR, OVERLAY_COLOR };
 
 export function ImageDiff({
+    hasPadding = DEFAULT_PROPS.hasPadding,
     mode = DEFAULT_PROPS.mode,
     showDivider = DEFAULT_PROPS.showDivider,
     showFullSize = DEFAULT_PROPS.showFullSize,
     showOverlay = DEFAULT_PROPS.showOverlay,
-    hasPadding = DEFAULT_PROPS.hasPadding,
     url,
 }: Props) {
     const rootRef = useRef<HTMLDivElement>(null);
@@ -61,7 +63,9 @@ export function ImageDiff({
 
         resizeObserver.observe(rootRef.current);
 
-        return () => resizeObserver.disconnect();
+        return () => {
+            resizeObserver.disconnect();
+        };
     }, []);
 
     const img = useImage(url);
@@ -83,36 +87,36 @@ export function ImageDiff({
     switch (mode) {
         case "blend":
             comparison = (
-                <Blend overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} hasPadding={hasPadding} />
+                <Blend hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
             );
             break;
         case "side-by-side":
             comparison = (
                 <SideBySide
+                    hasPadding={hasPadding}
                     overlayUrl={overlayUrl}
                     scale={appliedScale}
                     size={size}
                     url={url}
-                    hasPadding={hasPadding}
                 />
             );
             break;
         case "split":
             comparison = (
                 <Split
-                    showDivider={showDivider}
+                    hasPadding={hasPadding}
                     overlayUrl={overlayUrl}
                     scale={appliedScale}
+                    showDivider={showDivider}
                     size={size}
                     url={url}
-                    hasPadding={hasPadding}
                 />
             );
             break;
         case "pixel-diff":
         default:
             comparison = (
-                <PixelDiff overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} hasPadding={hasPadding} />
+                <PixelDiff hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
             );
             break;
     }

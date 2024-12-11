@@ -1,16 +1,17 @@
 import { type CSSProperties } from "react";
+
 import { BORDER_WIDTH, NEW_COLOR, OLD_COLOR, PADDING } from "./constants";
 import { ModeProps } from "./types";
 
-interface Props extends Pick<ModeProps, "scale" | "size" | "url" | "hasPadding"> {
+interface Props extends Pick<ModeProps, "hasPadding" | "scale" | "size" | "url"> {
     style?: CSSProperties;
     type: "diff" | "new" | "old";
 }
 
-export function DiffImage({ scale, size, style, type, url, hasPadding }: Props) {
+export function DiffImage({ hasPadding, scale, size, style, type, url }: Props) {
     const index = type === "old" ? 0 : type === "new" ? 2 : 1;
     const borderColor = type === "old" ? OLD_COLOR : type === "new" ? NEW_COLOR : "#DFE1E6";
-    const outerSize = getDiffImageSize({ scale, size, hasPadding });
+    const outerSize = getDiffImageSize({ hasPadding, scale, size });
 
     return (
         <div
@@ -45,7 +46,7 @@ export function DiffImage({ scale, size, style, type, url, hasPadding }: Props) 
     );
 }
 
-export function getDiffImageSize({ scale, size, hasPadding }: Pick<ModeProps, "scale" | "size" | "hasPadding">) {
+export function getDiffImageSize({ hasPadding, scale, size }: Pick<ModeProps, "hasPadding" | "scale" | "size">) {
     const extra = (hasPadding ? PADDING * 2 : 0) + BORDER_WIDTH * 2;
 
     return {

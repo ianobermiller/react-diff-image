@@ -5,7 +5,7 @@ export default defineConfig({
     dts: true,
     entry: ["src/index.tsx"],
     format: ["cjs", "esm"],
+    minify: "terser",
     sourcemap: true,
     target: "es2020",
-    minify: "terser",
 });

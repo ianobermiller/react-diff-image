@@ -1,57 +1,70 @@
-import { createRoot } from "react-dom/client";
-import { DEFAULT_PROPS, ImageDiff, ImageDiffProps, MODES } from "..";
 import { useState } from "react";
+import { createRoot } from "react-dom/client";
+
+import { DEFAULT_PROPS, ImageDiff, ImageDiffProps, MODES } from "..";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const root = createRoot(document.getElementById("root")!);
-    root.render(<App />);
+    const root = document.getElementById("root");
+    if (!root) return;
+
+    createRoot(root).render(<App />);
 });
 
 function App() {
     const [config, setConfig] = useState<Omit<ImageDiffProps, "url">>(DEFAULT_PROPS);
     return (
         <div>
-            <div style={{ marginBottom: 20, display: "flex", gap: 20, whiteSpace: "nowrap", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 20, marginBottom: 20, whiteSpace: "nowrap" }}>
                 {MODES.map(({ label, value }) => (
                     <label key={value}>
                         <input
-                            type="radio"
-                            name="mode"
                             checked={config.mode === value}
-                            onChange={() => setConfig((prev) => ({ ...prev, mode: value }))}
+                            name="mode"
+                            onChange={() => {
+                                setConfig((prev) => ({ ...prev, mode: value }));
+                            }}
+                            type="radio"
                         />{" "}
                         {label}
                     </label>
                 ))}
                 <label>
                     <input
-                        type="checkbox"
                         checked={config.showDivider}
-                        onChange={() => setConfig((prev) => ({ ...prev, showDivider: !prev.showDivider }))}
+                        onChange={() => {
+                            setConfig((prev) => ({ ...prev, showDivider: !prev.showDivider }));
+                        }}
+                        type="checkbox"
                     />{" "}
                     Show divider
                 </label>
                 <label>
                     <input
-                        type="checkbox"
                         checked={config.showFullSize}
-                        onChange={() => setConfig((prev) => ({ ...prev, showFullSize: !prev.showFullSize }))}
+                        onChange={() => {
+                            setConfig((prev) => ({ ...prev, showFullSize: !prev.showFullSize }));
+                        }}
+                        type="checkbox"
                     />{" "}
                     Show full size
                 </label>
                 <label>
                     <input
-                        type="checkbox"
                         checked={config.showOverlay}
-                        onChange={() => setConfig((prev) => ({ ...prev, showOverlay: !prev.showOverlay }))}
+                        onChange={() => {
+                            setConfig((prev) => ({ ...prev, showOverlay: !prev.showOverlay }));
+                        }}
+                        type="checkbox"
                     />{" "}
                     Show overlay
                 </label>
                 <label>
                     <input
-                        type="checkbox"
                         checked={config.hasPadding}
-                        onChange={() => setConfig((prev) => ({ ...prev, hasPadding: !prev.hasPadding }))}
+                        onChange={() => {
+                            setConfig((prev) => ({ ...prev, hasPadding: !prev.hasPadding }));
+                        }}
+                        type="checkbox"
                     />{" "}
                     Padding
                 </label>
