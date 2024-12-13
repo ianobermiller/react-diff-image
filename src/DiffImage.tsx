@@ -8,6 +8,10 @@ interface Props extends Pick<ModeProps, "hasPadding" | "scale" | "size" | "url">
     type: "diff" | "new" | "old";
 }
 
+const CHECKERBOARD_COLOR = "#ccc";
+const CHECKERBOARD_ALTERNATE_COLOR = "#fff";
+const CHECKERBOARD_SIZE = 10;
+
 export function DiffImage({ hasPadding, scale, size, style, type, url }: Props) {
     const index = type === "old" ? 0 : type === "new" ? 2 : 1;
     const borderColor = type === "old" ? OLD_COLOR : type === "new" ? NEW_COLOR : "#DFE1E6";
@@ -16,11 +20,7 @@ export function DiffImage({ hasPadding, scale, size, style, type, url }: Props) 
     return (
         <div
             style={{
-                // Checkerboard background
-                backgroundImage:
-                    "linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #ccc 75%), linear-gradient(-45deg, transparent 75%, #ccc 75%)",
-                backgroundPosition: "0 0, 0 10px, 10px -10px, -10px 0px",
-                backgroundSize: "20px 20px",
+                ...getCheckerboardStyles(CHECKERBOARD_COLOR, CHECKERBOARD_ALTERNATE_COLOR, CHECKERBOARD_SIZE),
                 border: `${BORDER_WIDTH}px solid ${borderColor}`,
                 boxSizing: "border-box",
                 height: outerSize.height,
@@ -52,5 +52,20 @@ export function getDiffImageSize({ hasPadding, scale, size }: Pick<ModeProps, "h
     return {
         height: size.height * scale + extra,
         width: size.width * scale + extra,
+    };
+}
+
+function getCheckerboardStyles(color: string, alternate: string, size: number): CSSProperties | undefined {
+    return {
+        backgroundImage: `
+            linear-gradient(45deg, ${color} 25%, transparent 25%),
+            linear-gradient(-45deg, ${color} 25%, transparent 25%),
+            linear-gradient(45deg, transparent 75%, ${color} 75%),
+            linear-gradient(-45deg, ${alternate} 75%, ${color} 75%)
+        `
+            .replace(/\n/g, "")
+            .trim(),
+        backgroundPosition: `0 0, 0 ${size}px, ${size}px -${size}px, -${size}px 0px`,
+        backgroundSize: `${size * 2}px ${size * 2}px`,
     };
 }
