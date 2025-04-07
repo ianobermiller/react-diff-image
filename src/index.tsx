@@ -7,6 +7,7 @@ import { BORDER_WIDTH, MODES, NEW_COLOR, OLD_COLOR, OVERLAY_COLOR, PADDING } fro
 import { getOverlay } from "./getOverlay";
 import { PixelDiff } from "./PixelDiff";
 import { SIDE_BY_SIDE_GAP, SideBySide } from "./SideBySide";
+import { SingleImage } from "./SingleImage";
 import { Split } from "./Split";
 import { ImageDiffMode } from "./types";
 import { useImage } from "./useImage";
@@ -90,6 +91,17 @@ export function ImageDiff({
                 <Blend hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
             );
             break;
+        case "new-only":
+            comparison = <SingleImage hasPadding={hasPadding} scale={appliedScale} size={size} type="new" url={url} />;
+            break;
+        case "old-only":
+            comparison = <SingleImage hasPadding={hasPadding} scale={appliedScale} size={size} type="old" url={url} />;
+            break;
+        case "pixel-diff":
+            comparison = (
+                <PixelDiff hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
+            );
+            break;
         case "side-by-side":
             comparison = (
                 <SideBySide
@@ -102,6 +114,7 @@ export function ImageDiff({
             );
             break;
         case "split":
+        default:
             comparison = (
                 <Split
                     hasPadding={hasPadding}
@@ -111,12 +124,6 @@ export function ImageDiff({
                     size={size}
                     url={url}
                 />
-            );
-            break;
-        case "pixel-diff":
-        default:
-            comparison = (
-                <PixelDiff hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
             );
             break;
     }

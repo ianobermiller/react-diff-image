@@ -11,13 +11,7 @@ export function SideBySide({ hasPadding, overlayUrl, scale, size, url }: ModePro
 
     return (
         <div style={{ width: diffImageSize.width * 2 + SIDE_BY_SIDE_GAP }}>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginBottom: 12,
-                }}
-            >
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
                 <Tag background={OLD_BG} color={OLD_COLOR}>
                     OLD
                 </Tag>

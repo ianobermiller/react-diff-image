@@ -15,7 +15,10 @@ function App() {
     return (
         <div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 20, marginBottom: 20, whiteSpace: "nowrap" }}>
-                {MODES.map(({ label, value }) => (
+                {MODES.concat([
+                    { label: "New only", value: "new-only" },
+                    { label: "Old only", value: "old-only" },
+                ]).map(({ label, value }) => (
                     <label key={value}>
                         <input
                             checked={config.mode === value}
