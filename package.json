@@ -1,6 +1,6 @@
 {
     "name": "react-diff-image",
-    "version": "1.3.0",
+    "version": "1.4.0",
     "description": "Zero-dependency component for multi-modal image comparison and review.",
     "files": [
         "dist",
