@@ -9,6 +9,7 @@ import { PixelDiff } from "./PixelDiff";
 import { SIDE_BY_SIDE_GAP, SideBySide } from "./SideBySide";
 import { SingleImage } from "./SingleImage";
 import { Split } from "./Split";
+import { THREE_UP_GAP, ThreeUp } from "./ThreeUp";
 import { ImageDiffMode } from "./types";
 import { useImage } from "./useImage";
 
@@ -78,7 +79,9 @@ export function ImageDiff({
     const targetWidth = maxWidth
         ? mode === "side-by-side"
             ? Math.floor((maxWidth - BORDER_WIDTH * 4 - (hasPadding ? PADDING * 4 : 0) - SIDE_BY_SIDE_GAP) / 2)
-            : maxWidth - BORDER_WIDTH * 2 - (hasPadding ? PADDING * 2 : 0)
+            : mode === "3-up"
+              ? Math.floor((maxWidth - BORDER_WIDTH * 6 - (hasPadding ? PADDING * 6 : 0) - THREE_UP_GAP * 2) / 3)
+              : maxWidth - BORDER_WIDTH * 2 - (hasPadding ? PADDING * 2 : 0)
         : null;
 
     const scale = targetWidth ? Math.min(1, targetWidth / size.width) : 1;
@@ -86,6 +89,11 @@ export function ImageDiff({
 
     let comparison: ReactNode;
     switch (mode) {
+        case "3-up":
+            comparison = (
+                <ThreeUp hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
+            );
+            break;
         case "blend":
             comparison = (
                 <Blend hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />

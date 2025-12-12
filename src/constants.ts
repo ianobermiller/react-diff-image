@@ -5,6 +5,7 @@ export const MODES: Array<{ label: string; value: ImageDiffMode }> = [
     { label: "Blend", value: "blend" },
     { label: "Pixel-diff", value: "pixel-diff" },
     { label: "Side-by-side", value: "side-by-side" },
+    { label: "3-up", value: "3-up" },
 ];
 
 export const OLD_COLOR = "rgb(191, 38, 0)";

@@ -1,4 +1,4 @@
-export type ImageDiffMode = "blend" | "new-only" | "old-only" | "pixel-diff" | "side-by-side" | "split";
+export type ImageDiffMode = "3-up" | "blend" | "new-only" | "old-only" | "pixel-diff" | "side-by-side" | "split";
 
 export interface ImageSize {
     height: number;
