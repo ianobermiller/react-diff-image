@@ -78,6 +78,14 @@ Optional styles for the root wrapper `div`.
 
 ## Changelog
 
+### 2.1.1
+
+**Documentation:** Republished with changelog.
+
+### 2.1.0
+
+**Added:** `oldLabel`, `newLabel`, and `diffLabel` on `ImageDiff` now control the visible tag text in every comparison mode that shows labels (`3-up`, `side-by-side`, `split`, `blend`, `old-only`, `new-only`).
+
 ### 2.0.0
 
 **Breaking change:** the root container no longer sets default `alignSelf`, `flexGrow`, `maxWidth`, or `overflow`. Those values interacted badly with some layouts, and full-size scrolling is better decided by the host. If you depended on the old behavior—for example in a flex column—recreate it with the `style` prop, for example:
