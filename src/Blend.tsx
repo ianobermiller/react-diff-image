@@ -6,7 +6,7 @@ import { OverlayImage } from "./OverlayImage";
 import { Tag } from "./Tag";
 import { ModeProps } from "./types";
 
-export function Blend({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
+export function Blend({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url }: ModeProps) {
     const [percentage, setPercentage] = useState(0.5);
     const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
 
@@ -14,16 +14,17 @@ export function Blend({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
         <div style={{ width: diffImageSize.width }}>
             <div
                 style={{
-                    alignItems: "center",
                     display: "flex",
                     gap: 4,
                     justifyContent: "center",
                     marginBottom: 12,
                 }}
             >
-                <Tag background={OLD_BG} color={OLD_COLOR}>
-                    OLD
-                </Tag>
+                <div style={{ display: "flex", flex: 1, justifyContent: "end" }}>
+                    <Tag background={OLD_BG} color={OLD_COLOR}>
+                        {oldLabel}
+                    </Tag>
+                </div>
 
                 <input
                     onInput={(e) => {
@@ -33,9 +34,11 @@ export function Blend({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
                     type="range"
                 />
 
-                <Tag background={NEW_BG} color={NEW_COLOR}>
-                    NEW
-                </Tag>
+                <div style={{ display: "flex", flex: 1 }}>
+                    <Tag background={NEW_BG} color={NEW_COLOR}>
+                        {newLabel}
+                    </Tag>
+                </div>
             </div>
 
             <div style={{ ...diffImageSize, position: "relative" }}>

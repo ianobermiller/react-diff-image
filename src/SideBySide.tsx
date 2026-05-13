@@ -6,17 +6,17 @@ import { ModeProps } from "./types";
 
 export const SIDE_BY_SIDE_GAP = 12;
 
-export function SideBySide({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
+export function SideBySide({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url }: ModeProps) {
     const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
 
     return (
         <div style={{ width: diffImageSize.width * 2 + SIDE_BY_SIDE_GAP }}>
             <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
                 <Tag background={OLD_BG} color={OLD_COLOR}>
-                    OLD
+                    {oldLabel}
                 </Tag>
                 <Tag background={NEW_BG} color={NEW_COLOR}>
-                    NEW
+                    {newLabel}
                 </Tag>
             </div>
 

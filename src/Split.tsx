@@ -7,7 +7,16 @@ import { OverlayImage } from "./OverlayImage";
 import { Tag } from "./Tag";
 import { ModeProps } from "./types";
 
-export function Split({ hasPadding, overlayUrl, scale, showDivider, size, url }: ModeProps & { showDivider: boolean }) {
+export function Split({
+    hasPadding,
+    newLabel,
+    oldLabel,
+    overlayUrl,
+    scale,
+    showDivider,
+    size,
+    url,
+}: ModeProps & { showDivider: boolean }) {
     const [percentage, setPercentage] = useState(0.5);
     const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
 
@@ -30,10 +39,10 @@ export function Split({ hasPadding, overlayUrl, scale, showDivider, size, url }:
         >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Tag background={OLD_BG} color={OLD_COLOR}>
-                    OLD
+                    {oldLabel}
                 </Tag>
                 <Tag background={NEW_BG} color={NEW_COLOR}>
-                    NEW
+                    {newLabel}
                 </Tag>
             </div>
 
