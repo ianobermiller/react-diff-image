@@ -14,9 +14,15 @@ import { ImageDiffMode } from "./types";
 import { useImage } from "./useImage";
 
 interface Props {
+    /** Label for the diff image. Defaults to "DIFF". */
+    diffLabel?: string;
     /** Add padding inside the image to better see the edges. */
     hasPadding?: boolean;
     mode?: ImageDiffMode;
+    /** Label for the new image. Defaults to "NEW". */
+    newLabel?: string;
+    /** Label for the old image. Defaults to "OLD". */
+    oldLabel?: string;
     /** Show the divider in `split` mode */
     showDivider?: boolean;
     /** Show the image at its natural size instead of fitting to the viewport */
@@ -44,8 +50,11 @@ export type { ImageDiffMode };
 export { MODES, NEW_COLOR, OLD_COLOR, OVERLAY_COLOR };
 
 export function ImageDiff({
+    diffLabel = "DIFF",
     hasPadding = DEFAULT_PROPS.hasPadding,
     mode = DEFAULT_PROPS.mode,
+    newLabel = "NEW",
+    oldLabel = "OLD",
     showDivider = DEFAULT_PROPS.showDivider,
     showFullSize = DEFAULT_PROPS.showFullSize,
     showOverlay = DEFAULT_PROPS.showOverlay,
@@ -94,29 +103,79 @@ export function ImageDiff({
     switch (mode) {
         case "3-up":
             comparison = (
-                <ThreeUp hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
+                <ThreeUp
+                    diffLabel={diffLabel}
+                    hasPadding={hasPadding}
+                    newLabel={newLabel}
+                    oldLabel={oldLabel}
+                    overlayUrl={overlayUrl}
+                    scale={appliedScale}
+                    size={size}
+                    url={url}
+                />
             );
             break;
         case "blend":
             comparison = (
-                <Blend hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
+                <Blend
+                    diffLabel={diffLabel}
+                    hasPadding={hasPadding}
+                    newLabel={newLabel}
+                    oldLabel={oldLabel}
+                    overlayUrl={overlayUrl}
+                    scale={appliedScale}
+                    size={size}
+                    url={url}
+                />
             );
             break;
         case "new-only":
-            comparison = <SingleImage hasPadding={hasPadding} scale={appliedScale} size={size} type="new" url={url} />;
+            comparison = (
+                <SingleImage
+                    hasPadding={hasPadding}
+                    newLabel={newLabel}
+                    oldLabel={oldLabel}
+                    scale={appliedScale}
+                    size={size}
+                    type="new"
+                    url={url}
+                />
+            );
             break;
         case "old-only":
-            comparison = <SingleImage hasPadding={hasPadding} scale={appliedScale} size={size} type="old" url={url} />;
+            comparison = (
+                <SingleImage
+                    hasPadding={hasPadding}
+                    newLabel={newLabel}
+                    oldLabel={oldLabel}
+                    scale={appliedScale}
+                    size={size}
+                    type="old"
+                    url={url}
+                />
+            );
             break;
         case "pixel-diff":
             comparison = (
-                <PixelDiff hasPadding={hasPadding} overlayUrl={overlayUrl} scale={appliedScale} size={size} url={url} />
+                <PixelDiff
+                    diffLabel={diffLabel}
+                    hasPadding={hasPadding}
+                    newLabel={newLabel}
+                    oldLabel={oldLabel}
+                    overlayUrl={overlayUrl}
+                    scale={appliedScale}
+                    size={size}
+                    url={url}
+                />
             );
             break;
         case "side-by-side":
             comparison = (
                 <SideBySide
+                    diffLabel={diffLabel}
                     hasPadding={hasPadding}
+                    newLabel={newLabel}
+                    oldLabel={oldLabel}
                     overlayUrl={overlayUrl}
                     scale={appliedScale}
                     size={size}
@@ -128,7 +187,10 @@ export function ImageDiff({
         default:
             comparison = (
                 <Split
+                    diffLabel={diffLabel}
                     hasPadding={hasPadding}
+                    newLabel={newLabel}
+                    oldLabel={oldLabel}
                     overlayUrl={overlayUrl}
                     scale={appliedScale}
                     showDivider={showDivider}

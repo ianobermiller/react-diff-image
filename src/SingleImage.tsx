@@ -5,11 +5,13 @@ import { ModeProps } from "./types";
 
 export function SingleImage({
     hasPadding,
+    newLabel,
+    oldLabel,
     scale,
     size,
     type,
     url,
-}: Pick<ModeProps, "hasPadding" | "scale" | "size" | "url"> & {
+}: Pick<ModeProps, "hasPadding" | "newLabel" | "oldLabel" | "scale" | "size" | "url"> & {
     type: "new" | "old";
 }) {
     const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
@@ -25,7 +27,7 @@ export function SingleImage({
             }}
         >
             <Tag background={type === "new" ? NEW_BG : OLD_BG} color={type === "new" ? NEW_COLOR : OLD_COLOR}>
-                {type === "new" ? "NEW" : "OLD"}
+                {type === "new" ? newLabel : oldLabel}
             </Tag>
 
             <DiffImage hasPadding={hasPadding} scale={scale} size={size} type={type} url={url} />

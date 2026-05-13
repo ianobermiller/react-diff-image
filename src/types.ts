@@ -6,7 +6,10 @@ export interface ImageSize {
 }
 
 export interface ModeProps {
+    diffLabel: string;
     hasPadding: boolean;
+    newLabel: string;
+    oldLabel: string;
     overlayUrl: string | undefined;
     scale: number;
     size: ImageSize;
