@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
@@ -23,6 +23,8 @@ interface Props {
     showFullSize?: boolean;
     /** Show an overlay to highlight small differences between the old and new images */
     showOverlay?: boolean;
+    /** Style the container */
+    style?: CSSProperties;
     /** Image with old-diff-new concatenated horizontally in that order. */
     url: string;
 }
@@ -47,6 +49,7 @@ export function ImageDiff({
     showDivider = DEFAULT_PROPS.showDivider,
     showFullSize = DEFAULT_PROPS.showFullSize,
     showOverlay = DEFAULT_PROPS.showOverlay,
+    style,
     url,
 }: Props) {
     const rootRef = useRef<HTMLDivElement>(null);
@@ -137,10 +140,7 @@ export function ImageDiff({
     }
 
     return (
-        <div
-            ref={rootRef}
-            style={{ alignSelf: "stretch", flexGrow: 1, maxWidth: "100%", overflow: showFullSize ? "auto" : "hidden" }}
-        >
+        <div ref={rootRef} style={style}>
             {comparison}
         </div>
     );
