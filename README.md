@@ -72,6 +72,28 @@ Defaults to false. Adds padding around the images with a standard checkerboard p
 
 ![padding](images/padding.webp)
 
+### `style`
+
+Optional styles for the root wrapper `div`.
+
+## Changelog
+
+### 2.0.0
+
+**Breaking change:** the root container no longer sets default `alignSelf`, `flexGrow`, `maxWidth`, or `overflow`. Those values interacted badly with some layouts, and full-size scrolling is better decided by the host. If you depended on the old behavior—for example in a flex column—recreate it with the `style` prop, for example:
+
+```tsx
+<ImageDiff
+    url={url}
+    style={{
+        alignSelf: "stretch",
+        flexGrow: 1,
+        maxWidth: "100%",
+        overflow: showFullSize ? "auto" : "hidden",
+    }}
+/>
+```
+
 ## Building
 
 ```sh
