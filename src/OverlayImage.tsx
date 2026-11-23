@@ -3,7 +3,7 @@ import type { ReactElement } from "react";
 import { BORDER_WIDTH, PADDING } from "./constants";
 import type { ModeProps } from "./types";
 
-interface Props extends Pick<ModeProps, "hasPadding" | "overlayUrl" | "scale" | "size"> {}
+type Props = Pick<ModeProps, "hasPadding" | "overlayUrl" | "scale" | "size">;
 
 export function OverlayImage({ hasPadding, overlayUrl, scale, size }: Props): ReactElement | null {
     if (!overlayUrl) return null;

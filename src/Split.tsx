@@ -1,5 +1,4 @@
-import type { ReactElement } from "react";
-import { type KeyboardEvent, type PointerEvent, useRef } from "react";
+import { type ReactElement, type KeyboardEvent, type PointerEvent, useRef } from "react";
 
 import { clamp } from "./clamp";
 import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
@@ -54,27 +53,34 @@ export function Split({
         let value = percentageRef.current;
         switch (e.key) {
             case "ArrowLeft":
-            case "ArrowDown":
+            case "ArrowDown": {
                 value -= step;
                 break;
+            }
             case "ArrowRight":
-            case "ArrowUp":
+            case "ArrowUp": {
                 value += step;
                 break;
-            case "PageDown":
+            }
+            case "PageDown": {
                 value -= 0.1;
                 break;
-            case "PageUp":
+            }
+            case "PageUp": {
                 value += 0.1;
                 break;
-            case "Home":
+            }
+            case "Home": {
                 value = 0;
                 break;
-            case "End":
+            }
+            case "End": {
                 value = 1;
                 break;
-            default:
+            }
+            default: {
                 return;
+            }
         }
         e.preventDefault();
         updatePercentage(value);

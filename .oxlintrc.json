@@ -1,8 +1,12 @@
 {
     "$schema": "./node_modules/oxlint/configuration_schema.json",
-    "plugins": ["typescript", "react", "jsx-a11y", "import", "node"],
+    "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "import", "node", "promise"],
     "categories": {
-        "correctness": "error"
+        "correctness": "error",
+        "suspicious": "error",
+        "pedantic": "error",
+        "perf": "error",
+        "style": "error"
     },
     "rules": {
         "react/rules-of-hooks": "error",
@@ -15,7 +19,141 @@
         "typescript/no-unsafe-call": "error",
         "typescript/no-unsafe-member-access": "error",
         "typescript/no-unsafe-return": "error",
-        "typescript/consistent-type-imports": "error"
+        "typescript/consistent-type-imports": [
+            "error",
+            {
+                "prefer": "type-imports",
+                "fixStyle": "inline-type-imports"
+            }
+        ],
+        "func-style": [
+            "error",
+            "declaration",
+            {
+                "allowArrowFunctions": true
+            }
+        ],
+        "one-var": ["error", "never"],
+        "curly": ["error", "multi-line"],
+        "sort-imports": "off",
+        "sort-keys": "off",
+        "no-ternary": "off",
+        "no-magic-numbers": "off",
+        "id-length": "off",
+        "max-statements": "off",
+        "max-lines-per-function": "off",
+        "prefer-named-capture-group": "off",
+        "no-continue": "off",
+        "init-declarations": "off",
+        "import/no-named-export": "off",
+        "import/prefer-default-export": "off",
+        "import/group-exports": "off",
+        "import/exports-last": "off",
+        "import/max-dependencies": "off",
+        "import/consistent-type-specifier-style": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-max-depth": "off",
+        "react/jsx-props-no-spreading": "off",
+        "react/hook-use-state": "off",
+        "promise/avoid-new": "off",
+        "typescript/prefer-readonly-parameter-types": "off",
+        "typescript/strict-boolean-expressions": "off",
+        "typescript/consistent-return": "off",
+        "typescript/no-explicit-any": "error",
+        "typescript/no-non-null-assertion": "error",
+        "typescript/no-empty-object-type": "error",
+        "typescript/no-unsafe-type-assertion": "error",
+        "eqeqeq": ["error", "always"],
+        "no-console": "error",
+        "no-debugger": "error",
+        "no-alert": "error",
+        "no-eval": "error",
+        "no-new-func": "error",
+        "no-var": "error",
+        "prefer-const": "error",
+        "import/no-cycle": "error",
+        "import/no-self-import": "error",
+        "import/no-default-export": "error",
+        "no-duplicate-imports": [
+            "error",
+            {
+                "allowSeparateTypeImports": true
+            }
+        ],
+        "unicorn/filename-case": [
+            "error",
+            {
+                "cases": {
+                    "camelCase": true,
+                    "pascalCase": true,
+                    "kebabCase": true
+                }
+            }
+        ],
+        "unicorn/no-null": "off",
+        "unicorn/prefer-export-from": "off",
+        "unicorn/prefer-string-replace-all": "off",
+        "no-inner-declarations": ["error", "both"],
+        "promise/prefer-await-to-then": "off",
+        "promise/always-return": [
+            "error",
+            {
+                "ignoreLastCallback": true
+            }
+        ],
+        "react/button-has-type": "error",
+        "prefer-arrow-callback": [
+            "error",
+            {
+                "allowNamedFunctions": true
+            }
+        ],
+        "capitalized-comments": "off",
+        "consistent-return": "off",
+        "unicorn/no-useless-undefined": [
+            "error",
+            {
+                "checkArguments": false
+            }
+        ]
     },
-    "ignorePatterns": ["dist/**", "dist-demo/**", "test-results/**", "playwright-report/**", "dist-test/**"]
+    "ignorePatterns": ["dist/**", "dist-demo/**", "test-results/**", "playwright-report/**", "dist-test/**"],
+    "options": {
+        "reportUnusedDisableDirectives": "error",
+        "denyWarnings": true
+    },
+    "overrides": [
+        {
+            "files": ["*.config.mts"],
+            "rules": {
+                "import/no-default-export": "off"
+            }
+        },
+        {
+            "files": ["tests/**", "perf/**"],
+            "rules": {
+                "no-await-in-loop": "off"
+            }
+        },
+        {
+            "files": ["perf/**", "tests/*.mjs"],
+            "rules": {
+                "import/no-nodejs-modules": "off",
+                "node/no-sync": "off"
+            }
+        },
+        {
+            "files": ["perf/**"],
+            "rules": {
+                "no-console": "off"
+            }
+        },
+        {
+            "files": ["perf/measure.mjs"],
+            "rules": {
+                "no-inner-declarations": "off",
+                "unicorn/consistent-function-scoping": "off"
+            }
+        }
+    ]
 }

@@ -138,25 +138,34 @@ export function ImageDiff({
 
     let comparison: ReactNode;
     switch (mode) {
-        case "3-up":
+        case "3-up": {
             comparison = <ThreeUp {...modeProps} />;
             break;
-        case "blend":
+        }
+        case "blend": {
             comparison = <Blend {...modeProps} />;
             break;
+        }
         case "new-only":
-        case "old-only":
+        case "old-only": {
             comparison = <SingleImage {...modeProps} type={mode === "new-only" ? "new" : "old"} />;
             break;
-        case "pixel-diff":
+        }
+        case "pixel-diff": {
             comparison = <PixelDiff {...modeProps} />;
             break;
-        case "side-by-side":
+        }
+        case "side-by-side": {
             comparison = <SideBySide {...modeProps} />;
             break;
-        default:
+        }
+        // Check every typed mode while preserving the fallback for JavaScript callers.
+        // oxlint-disable-next-line unicorn/no-useless-switch-case
+        case "split":
+        default: {
             comparison = <Split {...modeProps} showDivider={showDivider} />;
             break;
+        }
     }
 
     return (

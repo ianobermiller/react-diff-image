@@ -9,7 +9,7 @@ const config: UserConfig = {
     checks: { moduleLevelDirective: false },
     dts: false,
     env: { NODE_ENV: "development" },
-    deps: { alwaysBundle: [/^(react|react-dom|scheduler)(\/|$)/], onlyBundle: ["react", "react-dom", "scheduler"] },
+    deps: { alwaysBundle: [/^(react|react-dom|scheduler)(\/|$)/u], onlyBundle: ["react", "react-dom", "scheduler"] },
     copy: [{ from: "src/demo/public/*" }],
     sourcemap: true,
 };

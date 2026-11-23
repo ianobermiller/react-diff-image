@@ -47,22 +47,34 @@ function loadImage(url: string): Promise<HTMLImageElement | undefined> {
         const img = new Image();
         // Match the panels' CORS mode so they can share this request.
         img.crossOrigin = "anonymous";
-        img.onload = () => {
-            let bytes = imageBytes(img);
-            if (bytes <= MAX_CACHED_BYTES) {
-                for (const cachedImage of resolvedCache.values()) bytes += imageBytes(cachedImage);
-                for (const [oldestUrl, oldest] of resolvedCache) {
-                    if (resolvedCache.size < MAX_CACHED_IMAGES && bytes <= MAX_CACHED_BYTES) break;
-                    resolvedCache.delete(oldestUrl);
-                    bytes -= imageBytes(oldest);
+        img.addEventListener(
+            "load",
+            () => {
+                let bytes = imageBytes(img);
+                if (bytes <= MAX_CACHED_BYTES) {
+                    for (const cachedImage of resolvedCache.values()) {
+                        bytes += imageBytes(cachedImage);
+                    }
+                    for (const [oldestUrl, oldest] of resolvedCache) {
+                        if (resolvedCache.size < MAX_CACHED_IMAGES && bytes <= MAX_CACHED_BYTES) {
+                            break;
+                        }
+                        resolvedCache.delete(oldestUrl);
+                        bytes -= imageBytes(oldest);
+                    }
+                    resolvedCache.set(url, img);
                 }
-                resolvedCache.set(url, img);
-            }
-            resolve(img);
-        };
-        img.onerror = () => {
-            resolve(undefined);
-        };
+                resolve(img);
+            },
+            { once: true },
+        );
+        img.addEventListener(
+            "error",
+            () => {
+                resolve(undefined);
+            },
+            { once: true },
+        );
         img.src = url;
     }).finally(() => {
         pendingCache.delete(url);

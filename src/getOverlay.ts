@@ -24,18 +24,18 @@ export function getOverlay(img: HTMLImageElement): string | undefined {
 
     const width = Math.floor(img.naturalWidth / 3);
     const height = img.naturalHeight;
-    if (!width || !height) return undefined;
+    if (!width || !height) return;
 
     const overlayWidth = Math.max(1, Math.round(width * OVERLAY_SCALE));
     const overlayHeight = Math.max(1, Math.round(height * OVERLAY_SCALE));
 
-    // draw the middle third of the image into a scratch canvas and scan it for differing pixels
+    // Draw the middle third of the image into a scratch canvas and scan it for differing pixels
     const imageCanvas = document.createElement("canvas");
     imageCanvas.width = width;
     imageCanvas.height = height;
 
     const imageCtx = imageCanvas.getContext("2d", { willReadFrequently: true });
-    if (!imageCtx) return undefined;
+    if (!imageCtx) return;
 
     imageCtx.drawImage(img, width, 0, width, height, 0, 0, width, height);
     const { data } = imageCtx.getImageData(0, 0, width, height);
@@ -45,7 +45,7 @@ export function getOverlay(img: HTMLImageElement): string | undefined {
     overlayCanvas.height = overlayHeight;
 
     const overlayCtx = overlayCanvas.getContext("2d");
-    if (!overlayCtx) return undefined;
+    if (!overlayCtx) return;
 
     // Round centers the same way as the overlay coordinates. On an even-sized
     // panel, the last center can land on the canvas edge and still be visible.
@@ -57,7 +57,7 @@ export function getOverlay(img: HTMLImageElement): string | undefined {
         const row = (Math.round(y * OVERLAY_SCALE) + 1) * stride + 1;
         for (let x = 0; x < width; x++) {
             const index = (y * width + x) * 4;
-            if (!isAlmostGrayscale(data[index] || 0, data[index + 1] || 0, data[index + 2] || 0)) {
+            if (!isAlmostGrayscale(data[index] ?? 0, data[index + 1] ?? 0, data[index + 2] ?? 0)) {
                 centers[row + Math.round(x * OVERLAY_SCALE)] = 1;
             }
         }

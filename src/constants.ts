@@ -1,6 +1,6 @@
 import type { ImageDiffMode } from "./types";
 
-export const MODES: Array<{ label: string; value: ImageDiffMode }> = [
+export const MODES: { label: string; value: ImageDiffMode }[] = [
     { label: "Split", value: "split" },
     { label: "Blend", value: "blend" },
     { label: "Pixel-diff", value: "pixel-diff" },

@@ -26,9 +26,12 @@ try {
 
     await page.addInitScript(
         ({ profileCanvas }) => {
-            window.measureUpdate = (root, expected, update) =>
+            globalThis.measureUpdate = (root, expected, update) =>
                 new Promise((resolve, reject) => {
-                    if (expected()) return reject(new Error("The expected update was already present"));
+                    if (expected()) {
+                        reject(new Error("The expected update was already present"));
+                        return;
+                    }
                     const observer = new MutationObserver(() => {
                         if (!expected()) return;
 
@@ -53,25 +56,25 @@ try {
 
             if (!profileCanvas) return;
 
-            window.canvasProfile = { getImageDataMs: 0, drawImageMs: 0, fillMs: 0, toDataURLMs: 0, arcCount: 0 };
+            globalThis.canvasProfile = { getImageDataMs: 0, drawImageMs: 0, fillMs: 0, toDataURLMs: 0, arcCount: 0 };
             for (const [prototype, methods] of [
                 [CanvasRenderingContext2D.prototype, ["drawImage", "getImageData", "fill"]],
                 [HTMLCanvasElement.prototype, ["toDataURL"]],
             ]) {
                 for (const method of methods) {
                     const original = prototype[method];
-                    prototype[method] = function (...args) {
+                    prototype[method] = function profileMethod(...args) {
                         const start = performance.now();
                         const result = original.apply(this, args);
-                        window.canvasProfile[`${method}Ms`] += performance.now() - start;
+                        globalThis.canvasProfile[`${method}Ms`] += performance.now() - start;
                         return result;
                     };
                 }
             }
-            const arc = CanvasRenderingContext2D.prototype.arc;
-            CanvasRenderingContext2D.prototype.arc = function (...args) {
-                window.canvasProfile.arcCount++;
-                return arc.apply(this, args);
+            const { arc: originalArc } = CanvasRenderingContext2D.prototype;
+            CanvasRenderingContext2D.prototype.arc = function arc(...args) {
+                globalThis.canvasProfile.arcCount++;
+                return originalArc.apply(this, args);
             };
         },
         { profileCanvas: process.env.PROFILE_CANVAS === "1" },
@@ -94,12 +97,12 @@ try {
     const results = { label, navMs: performance.now() - navStart };
 
     const overlayToggle = page.getByRole("checkbox", { name: "Show overlay" });
-    async function measureOverlay() {
+    function measureOverlay() {
         return overlayToggle.evaluate(async (checkbox) => {
-            const root = document.getElementById("root");
+            const root = document.querySelector("#root");
             const overlay = () => root.querySelector('div[style*="background-image"][style*="data:image/"]');
             const start = performance.now();
-            const commitMs = await window.measureUpdate(root, overlay, () => checkbox.click());
+            const commitMs = await globalThis.measureUpdate(root, overlay, () => checkbox.click());
             const background = overlay().style.backgroundImage;
             const image = new Image();
             image.src = background.slice(5, -2);
@@ -129,30 +132,32 @@ try {
     await overlayToggle.uncheck();
     await page.locator('div[style*="background-image"][style*="data:image/"]').waitFor({ state: "detached" });
 
-    async function measureInteraction(mode) {
-        return page.evaluate(async (mode) => {
-            const root = document.getElementById("root");
+    function measureInteraction(mode) {
+        return page.evaluate(async (comparisonMode) => {
+            const root = document.querySelector("#root");
             const layers = root.querySelectorAll("div[style*='clip-path']");
             const container = layers[0]?.parentElement;
             const divider = container?.querySelector("div[style*='orange']");
             const slider = root.querySelector('input[type="range"]');
-            if (mode === "split" ? layers.length !== 2 || !divider : !slider)
-                throw new Error(`Missing ${mode} controls`);
+            if (comparisonMode === "split" ? layers.length !== 2 || !divider : !slider) {
+                throw new Error(`Missing ${comparisonMode} controls`);
+            }
 
+            const near = (actual, expected) => Math.abs(actual - expected) < 0.01;
             const samples = [];
             for (let i = 0; i < 60; i++) {
                 // Pace the events before starting the timer, including time for the previous update to paint.
                 await new Promise(requestAnimationFrame);
                 const value = i % 2 === 0 ? 25 : 75;
-                if (mode === "split") {
+                if (comparisonMode === "split") {
                     const rect = container.getBoundingClientRect();
                     const clientX = Math.round(rect.left + (rect.width * value) / 100);
                     const percentage = ((clientX - rect.left) / rect.width) * 100;
-                    const near = (actual, expected) => Math.abs(actual - expected) < 0.01;
+
                     const expected = () => {
-                        const left = layers[0].style.clipPath.match(/([\d.]+)%/);
-                        const right = layers[1].style.clipPath.match(/([\d.]+)%/);
-                        const line = divider.style.left.match(/([\d.]+)%/);
+                        const left = layers[0].style.clipPath.match(/([\d.]+)%/u);
+                        const right = layers[1].style.clipPath.match(/([\d.]+)%/u);
+                        const line = divider.style.left.match(/([\d.]+)%/u);
                         return (
                             left &&
                             right &&
@@ -163,7 +168,7 @@ try {
                         );
                     };
                     samples.push(
-                        await window.measureUpdate(container, expected, () => {
+                        await globalThis.measureUpdate(container, expected, () => {
                             container.dispatchEvent(new MouseEvent("mousemove", { bubbles: true, clientX }));
                         }),
                     );
@@ -172,13 +177,13 @@ try {
                     const expected = () =>
                         Number(root.querySelector("div[style*='opacity']").style.opacity) === value / 100;
                     samples.push(
-                        await window.measureUpdate(root, expected, () => {
+                        await globalThis.measureUpdate(root, expected, () => {
                             slider.dispatchEvent(new Event("input", { bubbles: true }));
                         }),
                     );
                 }
             }
-            const sorted = samples.toSorted((a, b) => a - b);
+            const sorted = samples.toSorted((left, right) => left - right);
             return {
                 events: samples.length,
                 perEventMs: samples.reduce((sum, sample) => sum + sample, 0) / samples.length,
@@ -210,9 +215,11 @@ try {
         }
     }
 
-    if (errors.length) throw new Error(errors.join("\n"));
+    if (errors.length > 0) {
+        throw new Error(errors.join("\n"));
+    }
     results.errors = 0;
-    const canvasProfile = await page.evaluate(() => window.canvasProfile);
+    const canvasProfile = await page.evaluate(() => globalThis.canvasProfile);
     if (canvasProfile) results.canvasProfile = canvasProfile;
     console.log(JSON.stringify(results, null, 2));
 } finally {

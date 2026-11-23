@@ -148,6 +148,17 @@ npm run format:fix
 ```
 
 The toolchain uses tsdown for library and demo builds, TypeScript 7 for type checking, type-aware Oxlint with React Hooks and accessibility rules, and Oxfmt for formatting and import sorting.
+Oxlint enables the correctness, suspicious, pedantic, performance, and style categories as errors, plus selected restriction rules.
+The configuration explicitly includes Unicorn, Oxc, and Promise checks. Warnings and unused lint suppressions fail linting.
+Type-aware rules reject unsafe assignments and assertions, unhandled promises, non-null assertions, and incomplete switches over unions.
+
+The exceptions in `.oxlintrc.json` preserve named public exports, the automatic JSX runtime, JSX prop spreading, and React's `null` values.
+Oxfmt owns import ordering. TypeScript owns return-path checking, and ES2020 compatibility excludes `String.replaceAll` suggestions.
+Truthiness checks, one-line guards, bare `return`, numeric layout constants, ternaries, and callback-based image loading remain supported.
+Arbitrary limits on identifier length, function size, dependency counts, and JSX depth are disabled.
+File-specific overrides allow default exports in tool configurations, sequential browser interactions, Node imports and synchronous package checks, and console output in performance scripts.
+Browser-evaluated performance helpers stay inside their serialized callbacks, and image-load failures explicitly resolve to `undefined`.
+
 Declaration generation uses Oxc through TypeScript's `isolatedDeclarations` contract.
 React remains a peer dependency, and the published package has no runtime dependencies.
 Dependabot checks npm packages and GitHub Actions weekly.

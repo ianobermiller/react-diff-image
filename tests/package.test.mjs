@@ -35,7 +35,7 @@ test("the published tarball supports CJS, ESM, TypeScript consumers, and client 
         }
         for (const file of ["index.js", "index.mjs"]) {
             const source = readFileSync(join(installed, "dist", file), "utf8");
-            assert.match(source, /^\s*["']use client["'];/, `${file} must preserve the client boundary`);
+            assert.match(source, /^\s*["']use client["'];/u, `${file} must preserve the client boundary`);
         }
         const script = `import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';

@@ -1,4 +1,5 @@
-import { type CSSProperties, memo, type NamedExoticComponent, type ReactElement, type Ref } from "react";
+import { memo } from "react";
+import type { CSSProperties, NamedExoticComponent, ReactElement, Ref } from "react";
 
 import { BORDER_WIDTH, NEW_COLOR, OLD_COLOR, PADDING } from "./constants";
 import type { ImageSize, ModeProps } from "./types";
@@ -20,8 +21,11 @@ export const DiffImage: NamedExoticComponent<Props> = memo(function DiffImage({
     type,
     url,
 }: Props): ReactElement {
-    const index = type === "old" ? 0 : type === "new" ? 2 : 1;
-    const borderColor = type === "old" ? OLD_COLOR : type === "new" ? NEW_COLOR : "#DFE1E6";
+    const { index, borderColor } = {
+        old: { index: 0, borderColor: OLD_COLOR },
+        new: { index: 2, borderColor: NEW_COLOR },
+        diff: { index: 1, borderColor: "#DFE1E6" },
+    }[type];
     const outerSize = getDiffImageSize({ hasPadding, scale, size });
 
     return (
@@ -88,7 +92,7 @@ function getCheckerboardStyles(color: string, alternate: string, size: number): 
             linear-gradient(45deg, transparent 75%, ${color} 75%),
             linear-gradient(-45deg, ${alternate} 75%, ${color} 75%)
         `
-            .replace(/\n/g, "")
+            .replace(/\n/gu, "")
             .trim(),
         backgroundPosition: `0 0, 0 ${size}px, ${size}px -${size}px, -${size}px 0px`,
         backgroundSize: `${size * 2}px ${size * 2}px`,

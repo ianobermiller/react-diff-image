@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 
-import { DEFAULT_PROPS, ImageDiff, type ImageDiffProps, MODES } from "..";
+import { DEFAULT_PROPS, ImageDiff, MODES } from "..";
+import type { ImageDiffProps } from "..";
 
 document.addEventListener("DOMContentLoaded", () => {
-    const root = document.getElementById("root");
+    const root = document.querySelector("#root");
     if (!root) return;
 
     createRoot(root).render(<App />);
@@ -15,10 +16,13 @@ function App() {
     return (
         <div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 20, marginBottom: 20, whiteSpace: "nowrap" }}>
-                {MODES.concat([
-                    { label: "New only", value: "new-only" },
-                    { label: "Old only", value: "old-only" },
-                ]).map(({ label, value }) => (
+                {(
+                    [
+                        ...MODES,
+                        { label: "New only", value: "new-only" },
+                        { label: "Old only", value: "old-only" },
+                    ] satisfies typeof MODES
+                ).map(({ label, value }) => (
                     <label key={value}>
                         <input
                             checked={config.mode === value}

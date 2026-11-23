@@ -17,17 +17,37 @@ function Fixture() {
         <>
             <label>
                 URL
-                <input value={url} onChange={(event) => setUrl(event.currentTarget.value)} />
+                <input
+                    value={url}
+                    onChange={(event) => {
+                        setUrl(event.currentTarget.value);
+                    }}
+                />
             </label>
             <label>
                 Width
-                <input type="number" value={width} onChange={(event) => setWidth(event.currentTarget.valueAsNumber)} />
+                <input
+                    type="number"
+                    value={width}
+                    onChange={(event) => {
+                        setWidth(event.currentTarget.valueAsNumber);
+                    }}
+                />
             </label>
-            {MODES.concat([
-                { label: "New only", value: "new-only" },
-                { label: "Old only", value: "old-only" },
-            ]).map(({ label, value }) => (
-                <button key={value} onClick={() => setMode(value)}>
+            {(
+                [
+                    ...MODES,
+                    { label: "New only", value: "new-only" },
+                    { label: "Old only", value: "old-only" },
+                ] satisfies typeof MODES
+            ).map(({ label, value }) => (
+                <button
+                    type="button"
+                    key={value}
+                    onClick={() => {
+                        setMode(value);
+                    }}
+                >
                     {label}
                 </button>
             ))}
@@ -36,7 +56,9 @@ function Fixture() {
                 <input
                     type="checkbox"
                     checked={hasPadding}
-                    onChange={(event) => setPadding(event.currentTarget.checked)}
+                    onChange={(event) => {
+                        setPadding(event.currentTarget.checked);
+                    }}
                 />
             </label>
             <label>
@@ -44,7 +66,9 @@ function Fixture() {
                 <input
                     type="checkbox"
                     checked={showOverlay}
-                    onChange={(event) => setOverlay(event.currentTarget.checked)}
+                    onChange={(event) => {
+                        setOverlay(event.currentTarget.checked);
+                    }}
                 />
             </label>
             <label>
@@ -52,7 +76,9 @@ function Fixture() {
                 <input
                     type="checkbox"
                     checked={showDivider}
-                    onChange={(event) => setDivider(event.currentTarget.checked)}
+                    onChange={(event) => {
+                        setDivider(event.currentTarget.checked);
+                    }}
                 />
             </label>
             <label>
@@ -60,7 +86,9 @@ function Fixture() {
                 <input
                     type="checkbox"
                     checked={showFullSize}
-                    onChange={(event) => setFullSize(event.currentTarget.checked)}
+                    onChange={(event) => {
+                        setFullSize(event.currentTarget.checked);
+                    }}
                 />
             </label>
             <label>
@@ -68,7 +96,9 @@ function Fixture() {
                 <input
                     type="checkbox"
                     checked={customLabels}
-                    onChange={(event) => setCustomLabels(event.currentTarget.checked)}
+                    onChange={(event) => {
+                        setCustomLabels(event.currentTarget.checked);
+                    }}
                 />
             </label>
             <section aria-label="Image comparison" style={{ width }}>
@@ -86,6 +116,6 @@ function Fixture() {
     );
 }
 
-const root = document.getElementById("root");
+const root = document.querySelector("#root");
 if (!root) throw new Error("Missing root");
 createRoot(root).render(<Fixture />);

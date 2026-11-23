@@ -28,10 +28,12 @@ test("every mode loads, with custom labels in all labeled modes", async ({ page 
     ] as const) {
         await page.getByRole("button", { name: mode, exact: true }).click();
         await expect(region.locator("img")).toHaveCount(count);
-        if (mode !== "Pixel-diff" && mode !== "New only")
+        if (mode !== "Pixel-diff" && mode !== "New only") {
             await expect(region.getByText("Before", { exact: true })).toBeVisible();
-        if (mode !== "Pixel-diff" && mode !== "Old only")
+        }
+        if (mode !== "Pixel-diff" && mode !== "Old only") {
             await expect(region.getByText("After", { exact: true })).toBeVisible();
+        }
         if (mode === "3-up") await expect(region.getByText("Changes", { exact: true })).toBeVisible();
     }
 });
@@ -116,19 +118,23 @@ test("responsive scaling stays finite and nonnegative, including zero-width cont
         ["3-up", 0, 214 / 1280],
     ] as const) {
         await page.getByRole("button", { name: mode, exact: true }).click();
-        for (const width of [100, 0, 800]) {
+        for (const width of [100, 0, 800] as const) {
             await page.getByLabel("Width", { exact: true }).fill(String(width));
             await expect
-                .poll(async () =>
+                .poll(() =>
                     region
                         .locator("img")
                         .first()
                         .evaluate((img) => {
-                            const transform = getComputedStyle(img.parentElement!).transform;
+                            const parent = img.parentElement;
+                            if (!parent) {
+                                throw new Error("Missing image panel");
+                            }
+                            const { transform } = getComputedStyle(parent);
                             return new DOMMatrixReadOnly(transform).a;
                         }),
                 )
-                .toBeCloseTo(width === 0 ? 0 : width === 100 ? narrowScale : normalScale, 5);
+                .toBeCloseTo({ 0: 0, 100: narrowScale, 800: normalScale }[width], 5);
         }
     }
     await page.getByLabel("Full size").check();
@@ -145,11 +151,9 @@ test("overlay toggles, follows image URL changes, and recovers after a failed lo
     await expect(overlay).toHaveCount(0);
     await page.getByLabel("Overlay", { exact: true }).check();
     await expect(overlay).toHaveCSS("background-image", initial);
-    const image =
-        "data:image/svg+xml," +
-        encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" width="360" height="90"><path fill="red" d="M0 0h360v90H0z"/></svg>',
-        );
+    const image = `data:image/svg+xml,${encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="360" height="90"><path fill="red" d="M0 0h360v90H0z"/></svg>',
+    )}`;
     await page.getByLabel("URL", { exact: true }).fill(image);
     await expect(region.locator("img").first()).toHaveJSProperty("naturalWidth", 360);
     await expect(overlay).toHaveCount(1);
