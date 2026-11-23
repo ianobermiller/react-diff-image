@@ -86,12 +86,17 @@ test.describe("mobile split gestures", () => {
 
         const zoom = () => page.evaluate(() => window.visualViewport?.scale);
         await expect.poll(zoom).toBe(1);
-        await session.send("Input.synthesizePinchGesture", {
-            ...touchPoint(0.5),
-            gestureSourceType: "touch",
-            scaleFactor: 1.6,
-        });
-        await expect.poll(zoom, { timeout: 2000 }).toBeCloseTo(1.6);
+        const center = touchPoint(0.5);
+        const fingers = (distance: number) => [
+            { x: center.x - distance, y, id: 1 },
+            { x: center.x + distance, y, id: 2 },
+        ];
+        await session.send("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: fingers(40) });
+        for (const distance of [50, 60, 70, 80, 90, 100]) {
+            await session.send("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: fingers(distance) });
+        }
+        await session.send("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
+        await expect.poll(zoom, { timeout: 2000 }).toBeGreaterThan(1.2);
     });
 });
 

@@ -21,9 +21,7 @@ jobs:
                   cache: npm
             - run: npm ci
             - run: npm exec -- playwright install --with-deps chromium
-            - run: npm run check
-            - run: npm run demo:build
-            - run: npm audit --audit-level=low
+            - run: npm run ci:check
 
     compatibility:
         runs-on: ubuntu-latest
@@ -44,5 +42,4 @@ jobs:
                   cache: npm
             - run: npm ci
             - run: npm run build
-            - run: npm install --no-save --package-lock=false react@${{ matrix.react }} react-dom@${{ matrix.react }} @types/react@${{ matrix.types }} @types/react-dom@${{ matrix.types }}
-            - run: npm run test:package
+            - run: npm run ci:compatibility -- ${{ matrix.react }} ${{ matrix.types }}

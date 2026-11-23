@@ -141,6 +141,15 @@ npm run check
 Package tests install the generated tarball into an isolated consumer and verify both module formats and their TypeScript declarations.
 Browser tests cover comparison modes, labels, resizing, keyboard and touch controls, image URL changes, failed loads, and overlays.
 
+`npm ci` installs the Git pre-push hook. Every push runs `npm run prepush`, which checks both Node.js versions
+and every React compatibility version from CI in a temporary directory. The checks include the demo build and
+`npm audit --audit-level=low`. The hook downloads the required Node.js versions and Chromium as needed.
+Any failed check blocks the push. Run `npm run prepush` to check the full matrix manually.
+
+CI uses the same `ci:check` and `ci:compatibility` commands. Keep the version matrices in
+`scripts/prepush.mjs` and `.github/workflows/ci.yml` aligned when changing supported versions.
+GitHub requires every CI matrix job to pass before a pull request can merge into `main`.
+
 ```sh
 npm run build
 npm run lint:fix
