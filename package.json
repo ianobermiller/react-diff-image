@@ -2,23 +2,6 @@
     "name": "react-diff-image",
     "version": "2.1.1",
     "description": "Zero-dependency component for multi-modal image comparison and review.",
-    "files": [
-        "dist",
-        "images"
-    ],
-    "exports": {
-        ".": {
-            "require": "./dist/index.js",
-            "import": "./dist/index.mjs"
-        }
-    },
-    "main": "./dist/index.js",
-    "module": "./dist/index.mjs",
-    "types": "./dist/index.d.ts",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/ianobermiller/react-diff-image.git"
-    },
     "keywords": [
         "compare",
         "comparison",
@@ -27,42 +10,72 @@
         "react",
         "review"
     ],
-    "author": "Ian Obermiller <ian@obermillers.com>",
-    "license": "MIT",
+    "homepage": "https://github.com/ianobermiller/react-diff-image#readme",
     "bugs": {
         "url": "https://github.com/ianobermiller/react-diff-image/issues"
     },
-    "homepage": "https://github.com/ianobermiller/react-diff-image#readme",
-    "devDependencies": {
-        "@eslint/js": "^9.16.0",
-        "@types/react": "^19.0.1",
-        "@types/react-dom": "^19.0.1",
-        "eslint": "^9.16.0",
-        "eslint-plugin-perfectionist": "^4.2.0",
-        "eslint-plugin-react": "^7.37.2",
-        "globals": "^15.13.0",
-        "playwright-core": "1.65.1",
-        "prettier": "^3.4.2",
-        "react": "^19.0.0",
-        "react-dom": "^19.0.0",
-        "terser": "^5.37.0",
-        "tsup": "^8.3.5",
-        "typescript": "^5.7.2",
-        "typescript-eslint": "^8.18.0"
+    "license": "MIT",
+    "author": "Ian Obermiller <ian@obermillers.com>",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/ianobermiller/react-diff-image.git"
     },
-    "peerDependencies": {
-        "react": "^16.0.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    "files": [
+        "dist"
+    ],
+    "sideEffects": false,
+    "main": "./dist/index.js",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/index.d.mts",
+                "default": "./dist/index.mjs"
+            },
+            "require": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            }
+        }
     },
     "scripts": {
-        "build": "tsup",
-        "demo:build": "tsup --config tsup-demo.config.ts",
-        "demo:watch": "tsup --config tsup-demo.config.ts --watch",
-        "demo:serve": "npx serve dist-demo",
-        "tsc": "tsc",
-        "lint": "eslint src",
-        "lint:fix": "eslint --fix src",
-        "format": "prettier --check src",
-        "format:fix": "prettier --write src",
-        "prepublishOnly": "npm run build && npm run tsc && npm run lint && npm run format"
+        "build": "tsdown",
+        "demo:build": "tsdown --config tsdown-demo.config.mts --env.NODE_ENV production",
+        "demo:watch": "tsdown --config tsdown-demo.config.mts --watch",
+        "demo:serve": "node perf/server.mjs dist-demo 3000",
+        "tsc": "tsc --noEmit",
+        "lint": "oxlint --type-aware --deny-warnings src tests/*.ts tests/*.tsx *.config.mts && oxlint --deny-warnings perf tests/*.mjs",
+        "lint:fix": "oxlint --type-aware --fix --deny-warnings src tests/*.ts tests/*.tsx *.config.mts && oxlint --fix --deny-warnings perf tests/*.mjs",
+        "format": "oxfmt --check .",
+        "format:fix": "oxfmt --write .",
+        "test": "npm run build && npm run test:package && npm run test:browser",
+        "test:package": "node --test tests/package.test.mjs",
+        "test:browser": "playwright test",
+        "check": "npm run build && npm run tsc && npm run lint && npm run format && npm run test:package && npm run test:browser",
+        "prepublishOnly": "npm run check"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.65.1",
+        "@types/node": "^24.19.2",
+        "@types/react": "^19.3.0",
+        "@types/react-dom": "^19.3.0",
+        "oxfmt": "^0.79.0",
+        "oxlint": "^1.94.0",
+        "oxlint-tsgolint": "^7.0.2008",
+        "react": "^19.3.1",
+        "react-dom": "^19.3.1",
+        "tsdown": "^0.23.7",
+        "typescript": "^7.0.2"
+    },
+    "peerDependencies": {
+        "react": "^16.14.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
+    },
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24.11.0",
+            "onFail": "error"
+        }
     }
 }

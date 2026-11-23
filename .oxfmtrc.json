@@ -1,0 +1,14 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "tabWidth": 4,
+    "printWidth": 120,
+    "ignorePatterns": [
+        "dist/**",
+        "dist-demo/**",
+        "test-results/**",
+        "playwright-report/**",
+        "package-lock.json",
+        "dist-test/**"
+    ],
+    "sortImports": true
+}

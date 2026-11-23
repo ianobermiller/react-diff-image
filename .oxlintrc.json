@@ -1,0 +1,21 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["typescript", "react", "jsx-a11y", "import", "node"],
+    "categories": {
+        "correctness": "error"
+    },
+    "rules": {
+        "react/rules-of-hooks": "error",
+        "react/exhaustive-deps": "error",
+        "jsx-a11y/control-has-associated-label": "error",
+        "typescript/no-floating-promises": "error",
+        "typescript/no-misused-promises": "error",
+        "typescript/no-unsafe-assignment": "error",
+        "typescript/no-unsafe-argument": "error",
+        "typescript/no-unsafe-call": "error",
+        "typescript/no-unsafe-member-access": "error",
+        "typescript/no-unsafe-return": "error",
+        "typescript/consistent-type-imports": "error"
+    },
+    "ignorePatterns": ["dist/**", "dist-demo/**", "test-results/**", "playwright-report/**", "dist-test/**"]
+}

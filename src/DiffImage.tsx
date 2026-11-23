@@ -1,7 +1,7 @@
-import { type CSSProperties, memo, type Ref } from "react";
+import { type CSSProperties, memo, type NamedExoticComponent, type ReactElement, type Ref } from "react";
 
 import { BORDER_WIDTH, NEW_COLOR, OLD_COLOR, PADDING } from "./constants";
-import { ModeProps } from "./types";
+import type { ImageSize, ModeProps } from "./types";
 
 interface Props extends Pick<ModeProps, "hasPadding" | "scale" | "size" | "url"> {
     outerRef?: Ref<HTMLDivElement>;
@@ -11,7 +11,15 @@ interface Props extends Pick<ModeProps, "hasPadding" | "scale" | "size" | "url">
 
 const CHECKERBOARD_STYLES = getCheckerboardStyles("#ccc", "#fff", 10);
 
-export const DiffImage = memo(function DiffImage({ hasPadding, outerRef, scale, size, style, type, url }: Props) {
+export const DiffImage: NamedExoticComponent<Props> = memo(function DiffImage({
+    hasPadding,
+    outerRef,
+    scale,
+    size,
+    style,
+    type,
+    url,
+}: Props): ReactElement {
     const index = type === "old" ? 0 : type === "new" ? 2 : 1;
     const borderColor = type === "old" ? OLD_COLOR : type === "new" ? NEW_COLOR : "#DFE1E6";
     const outerSize = getDiffImageSize({ hasPadding, scale, size });
@@ -59,7 +67,11 @@ export const DiffImage = memo(function DiffImage({ hasPadding, outerRef, scale, 
     );
 });
 
-export function getDiffImageSize({ hasPadding, scale, size }: Pick<ModeProps, "hasPadding" | "scale" | "size">) {
+export function getDiffImageSize({
+    hasPadding,
+    scale,
+    size,
+}: Pick<ModeProps, "hasPadding" | "scale" | "size">): ImageSize {
     const extra = (hasPadding ? PADDING * 2 : 0) + BORDER_WIDTH * 2;
 
     return {

@@ -1,18 +1,21 @@
+import type { ReactElement } from "react";
 import { useRef } from "react";
 
 import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
 import { DiffImage, getDiffImageSize } from "./DiffImage";
 import { OverlayImage } from "./OverlayImage";
 import { Tag } from "./Tag";
-import { ModeProps } from "./types";
+import type { ModeProps } from "./types";
 
-export function Blend({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url }: ModeProps) {
+export function Blend({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url }: ModeProps): ReactElement {
     const percentageRef = useRef(0.5);
     const newLayerRef = useRef<HTMLDivElement>(null);
 
     const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
     const imageProps = { hasPadding, scale, size, url };
 
+    // Input updates the DOM directly; incidental renders snapshot the current position.
+    // oxlint-disable-next-line react/refs
     const p = percentageRef.current;
 
     return (
@@ -32,6 +35,7 @@ export function Blend({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size,
                 </div>
 
                 <input
+                    aria-label={`Blend ${oldLabel} and ${newLabel}`}
                     defaultValue={p * 100}
                     onInput={(e) => {
                         const opacity = Number(e.currentTarget.value) / 100;

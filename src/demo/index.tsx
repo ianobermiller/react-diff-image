@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 
-import { DEFAULT_PROPS, ImageDiff, ImageDiffProps, MODES } from "..";
+import { DEFAULT_PROPS, ImageDiff, type ImageDiffProps, MODES } from "..";
 
 document.addEventListener("DOMContentLoaded", () => {
     const root = document.getElementById("root");

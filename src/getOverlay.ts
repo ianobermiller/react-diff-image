@@ -10,7 +10,7 @@ const GRAYSCALE_THRESHOLD = 10;
 
 const overlayCache = new WeakMap<HTMLImageElement, string>();
 
-export function getCachedOverlay(img: HTMLImageElement) {
+export function getCachedOverlay(img: HTMLImageElement): string | undefined {
     return overlayCache.get(img);
 }
 

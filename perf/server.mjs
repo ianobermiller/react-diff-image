@@ -1,6 +1,6 @@
 // Tiny static file server for dist-demo (no deps).
-import { createServer } from "node:http";
 import { readFile, realpath } from "node:fs/promises";
+import { createServer } from "node:http";
 import { extname, isAbsolute, relative, resolve, sep } from "node:path";
 
 const root = await realpath(resolve(process.argv[2] || "dist-demo"));

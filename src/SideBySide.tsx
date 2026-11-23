@@ -1,12 +1,14 @@
+import type { ReactElement } from "react";
+
 import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
 import { DiffImage, getDiffImageSize } from "./DiffImage";
 import { OverlayImage } from "./OverlayImage";
 import { Tag } from "./Tag";
-import { ModeProps } from "./types";
+import type { ModeProps } from "./types";
 
 export const SIDE_BY_SIDE_GAP = 12;
 
-export function SideBySide({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url }: ModeProps) {
+export function SideBySide({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url }: ModeProps): ReactElement {
     const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
 
     return (

@@ -1,4 +1,4 @@
-import { ImageDiffMode } from "./types";
+import type { ImageDiffMode } from "./types";
 
 export const MODES: Array<{ label: string; value: ImageDiffMode }> = [
     { label: "Split", value: "split" },

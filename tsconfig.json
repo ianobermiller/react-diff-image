@@ -1,30 +1,28 @@
 {
     "compilerOptions": {
-        "alwaysStrict": true,
         "esModuleInterop": true,
         "exactOptionalPropertyTypes": true,
         "forceConsistentCasingInFileNames": true,
         "jsx": "react-jsx",
-        "module": "commonjs",
+        "module": "preserve",
         "noEmit": true,
         "noFallthroughCasesInSwitch": true,
-        "noImplicitAny": true,
         "noImplicitOverride": true,
         "noImplicitReturns": true,
-        "noImplicitThis": true,
         "noPropertyAccessFromIndexSignature": true,
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "skipLibCheck": true,
         "strict": true,
-        "strictBindCallApply": true,
-        "strictBuiltinIteratorReturn": true,
-        "strictFunctionTypes": true,
-        "strictNullChecks": true,
-        "strictPropertyInitialization": true,
         "target": "es2020",
-        "useUnknownInCatchVariables": true
+        "moduleResolution": "bundler",
+        "lib": ["es2020", "DOM", "DOM.Iterable"],
+        "verbatimModuleSyntax": true,
+        "isolatedDeclarations": true,
+        "declaration": true,
+        "types": ["node", "react", "react-dom"],
+        "allowImportingTsExtensions": true
     },
-    "include": ["src"]
+    "include": ["src", "tests", "*.config.ts", "*.config.mts"]
 }

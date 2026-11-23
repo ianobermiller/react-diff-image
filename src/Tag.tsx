@@ -1,10 +1,12 @@
+import type { ReactElement } from "react";
+
 interface TagProps {
     background: string;
     children: React.ReactNode;
     color: string;
 }
 
-export function Tag({ background, children, color }: TagProps) {
+export function Tag({ background, children, color }: TagProps): ReactElement {
     return (
         <span
             style={{

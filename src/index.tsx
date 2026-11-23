@@ -1,5 +1,6 @@
-import type { CSSProperties, ReactNode } from "react";
+"use client";
 
+import type { CSSProperties, ReactElement, ReactNode } from "react";
 import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from "react";
 
 import { Blend } from "./Blend";
@@ -10,7 +11,7 @@ import { SIDE_BY_SIDE_GAP, SideBySide } from "./SideBySide";
 import { SingleImage } from "./SingleImage";
 import { Split } from "./Split";
 import { THREE_UP_GAP, ThreeUp } from "./ThreeUp";
-import { ImageDiffMode } from "./types";
+import type { ImageDiffMode } from "./types";
 import { useImage } from "./useImage";
 
 interface Props {
@@ -35,15 +36,21 @@ interface Props {
     url: string;
 }
 
-export { Props as ImageDiffProps };
+export type { Props as ImageDiffProps };
 
-export const DEFAULT_PROPS = {
+export const DEFAULT_PROPS: {
+    hasPadding: false;
+    mode: "split";
+    showDivider: true;
+    showFullSize: false;
+    showOverlay: false;
+} = {
     hasPadding: false,
     mode: "split",
     showDivider: true,
     showFullSize: false,
     showOverlay: false,
-} satisfies Partial<Props>;
+};
 
 export type { ImageDiffMode };
 
@@ -60,7 +67,7 @@ export function ImageDiff({
     showOverlay = DEFAULT_PROPS.showOverlay,
     style,
     url,
-}: Props) {
+}: Props): ReactElement {
     const rootRef = useRef<HTMLDivElement>(null);
     const [maxWidth, setMaxWidth] = useState<number | undefined>();
 
@@ -117,13 +124,16 @@ export function ImageDiff({
 
     const panelEdges = 2 * (BORDER_WIDTH + (hasPadding ? PADDING : 0));
     let targetWidth = 0;
-    if (maxWidth) {
+    if (maxWidth !== undefined) {
         targetWidth = maxWidth - panelEdges;
         if (mode === "side-by-side") targetWidth = Math.floor((maxWidth - SIDE_BY_SIDE_GAP) / 2) - panelEdges;
         if (mode === "3-up") targetWidth = Math.floor((maxWidth - 2 * THREE_UP_GAP) / 3) - panelEdges;
     }
 
-    const scale = !showFullSize && targetWidth ? Math.min(1, targetWidth / size.width) : 1;
+    const scale =
+        !showFullSize && maxWidth !== undefined && size.width > 0
+            ? Math.max(0, Math.min(1, targetWidth / size.width))
+            : 1;
     const modeProps = { diffLabel, hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url };
 
     let comparison: ReactNode;

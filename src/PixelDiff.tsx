@@ -1,8 +1,10 @@
+import type { ReactElement } from "react";
+
 import { DiffImage } from "./DiffImage";
 import { OverlayImage } from "./OverlayImage";
-import { ModeProps } from "./types";
+import type { ModeProps } from "./types";
 
-export function PixelDiff({ hasPadding, overlayUrl, scale, size, url }: ModeProps) {
+export function PixelDiff({ hasPadding, overlayUrl, scale, size, url }: ModeProps): ReactElement {
     return (
         <div style={{ position: "relative" }}>
             <DiffImage hasPadding={hasPadding} scale={scale} size={size} type="diff" url={url} />

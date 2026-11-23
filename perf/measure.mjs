@@ -2,7 +2,7 @@
 import { mkdir } from "node:fs/promises";
 import { join } from "node:path";
 
-import { chromium } from "playwright-core";
+import { chromium } from "@playwright/test";
 
 const [baseURL, outDir, label = "run"] = process.argv.slice(2);
 if (!baseURL || !outDir) throw new Error("Usage: node perf/measure.mjs <baseURL> <outDir | -> [label]");
