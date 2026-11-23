@@ -5,9 +5,19 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 
+import { highestRelease, validateReleaseBaseline } from "../scripts/check-release-baseline.mjs";
 import { validateManifest, validateRelease } from "../scripts/release-policy.mjs";
 
 const repository = resolve(import.meta.dirname, "..");
+
+test("releasing fails closed when Git tags differ from npm's published version", () => {
+    assert.equal(highestRelease(["2.1.1", "1.6.0", "2.1.2-beta.0"]), "2.1.1");
+    assert.equal(highestRelease(["2.9.0", "2.10.0", "10.0.0"]), "10.0.0");
+    assert.doesNotThrow(() => validateReleaseBaseline("2.1.1", "v2.1.1"));
+    for (const tag of ["", "v1.5.0", "v1.6.0", "v2.1.0", "v2.1.2"]) {
+        assert.throws(() => validateReleaseBaseline("2.1.1", tag), /Release baseline mismatch/u);
+    }
+});
 
 test("PR titles reject missing release intent and skipped checks", () => {
     for (const title of ["update component", "feature: add a mode", "fix: ", "fix: drag\n", "fix: drag [skip ci]"]) {
@@ -80,6 +90,7 @@ for (const [title, bump, version] of [
             git("commit", "-m", "chore: initial");
             git("tag", "v9.8.7");
             git("commit", "--allow-empty", "-m", title, "-m", body);
+            if (title === "fix: repair dragging") git("tag", "v1.6.0");
             const result = execFileSync(
                 process.execPath,
                 [
