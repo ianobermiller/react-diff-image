@@ -58,7 +58,7 @@
         "prepush": "node scripts/prepush.mjs",
         "prepare": "node scripts/install-hooks.mjs",
         "prepublishOnly": "npm run check",
-        "release": "release-it --ci",
+        "release": "node scripts/check-release-baseline.mjs && release-it --ci --verbose && node scripts/check-release-baseline.mjs --retry",
         "test:release": "node --test tests/release.test.mjs"
     },
     "devDependencies": {
