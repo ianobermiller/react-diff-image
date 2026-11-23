@@ -90,7 +90,7 @@ for (const [title, bump, version] of [
             git("commit", "-m", "chore: initial");
             git("tag", "v9.8.7");
             git("commit", "--allow-empty", "-m", title, "-m", body);
-            if (title === "fix: repair dragging") git("tag", "v1.6.0");
+            if (title === "fix: repair dragging" || bump === "major") git("tag", "v1.6.0");
             const result = execFileSync(
                 process.execPath,
                 [
@@ -121,6 +121,7 @@ for (const [title, bump, version] of [
                 );
                 assert.match(changelog, /BREAKING CHANGES/u);
                 assert.ok(changelog.includes(migration));
+                assert.doesNotMatch(changelog, /## \[1\.6\.0\]/u);
             }
         } finally {
             rmSync(directory, { recursive: true, force: true });

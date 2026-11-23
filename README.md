@@ -212,7 +212,7 @@ Keep the validated title and description when merging so release notes retain th
 Release-it reads the highest Git version tag rather than the checked-in package version. A preflight check requires
 that tag to match npm's highest stable version and published source commit, and to belong to the current branch's
 history. Missing or inconsistent tags block publishing. The same check runs after publishing and verifies npm's
-`latest` tag points to the published version.
+`latest` tag points to the published version, allowing up to five minutes for npm registry propagation.
 It updates `package.json`
 and the lockfile only in the publishing workspace; CI never commits version changes to `main`.
 GitHub releases contain the current changelog. The README changelog above records the earlier manual releases.
