@@ -52,23 +52,28 @@
         "test": "npm run build && npm run test:package && npm run test:browser",
         "test:package": "node --test tests/package.test.mjs",
         "test:browser": "playwright test",
-        "check": "npm run build && npm run tsc && npm run lint && npm run format && npm run test:package && npm run test:browser",
+        "check": "npm run build && npm run tsc && npm run lint && npm run format && npm run test:release && npm run test:package && npm run test:browser",
         "ci:check": "npm run check && npm run demo:build && npm audit --audit-level=low",
         "ci:compatibility": "node scripts/check-compatibility.mjs",
         "prepush": "node scripts/prepush.mjs",
         "prepare": "node scripts/install-hooks.mjs",
-        "prepublishOnly": "npm run check"
+        "prepublishOnly": "npm run check",
+        "release": "release-it --ci",
+        "test:release": "node --test tests/release.test.mjs"
     },
     "devDependencies": {
         "@playwright/test": "^1.65.1",
+        "@release-it/conventional-changelog": "12.0.0",
         "@types/node": "^24.19.2",
         "@types/react": "^19.3.0",
         "@types/react-dom": "^19.3.0",
+        "conventional-changelog-conventionalcommits": "10.4.1",
         "oxfmt": "^0.79.0",
         "oxlint": "^1.94.0",
         "oxlint-tsgolint": "^7.0.2008",
         "react": "^19.3.1",
         "react-dom": "^19.3.1",
+        "release-it": "21.1.3",
         "tsdown": "^0.23.7",
         "typescript": "^7.0.2"
     },
@@ -78,7 +83,7 @@
     "devEngines": {
         "runtime": {
             "name": "node",
-            "version": ">=24.11.0",
+            "version": ">=24.15.0",
             "onFail": "error"
         }
     }

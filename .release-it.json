@@ -1,0 +1,29 @@
+{
+    "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+    "git": {
+        "requireBranch": "main",
+        "requireCommits": true,
+        "requireCommitsFail": false,
+        "commit": false,
+        "push": false,
+        "tagName": "v${version}"
+    },
+    "npm": {
+        "ignoreVersion": true,
+        "allowSameVersion": true,
+        "skipChecks": true,
+        "publishArgs": ["--access", "public", "--provenance"]
+    },
+    "github": {
+        "release": true,
+        "releaseName": "v${version}"
+    },
+    "plugins": {
+        "@release-it/conventional-changelog": {
+            "preset": { "name": "conventionalcommits" }
+        }
+    },
+    "hooks": {
+        "after:git:release": "git -c core.hooksPath=/dev/null push origin refs/tags/${tagName}"
+    }
+}

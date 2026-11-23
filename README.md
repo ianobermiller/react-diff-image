@@ -129,7 +129,7 @@ Optional styles for the root wrapper `div`.
 
 ## Development
 
-Use Node.js 24.11 or newer. CI checks Node.js 24 and 26 LTS, plus package compatibility with React 16.14, 17, 18, and 19.
+Use Node.js 24.15 or newer. CI checks Node.js 24 and 26 LTS, plus package compatibility with React 16.14, 17, 18, and 19.
 
 ```sh
 npm ci
@@ -172,6 +172,66 @@ Declaration generation uses Oxc through TypeScript's `isolatedDeclarations` cont
 React remains a peer dependency, and the published package has no runtime dependencies.
 Dependabot checks npm packages and GitHub Actions weekly.
 
+## Releases
+
+Every push runs CI. After all Node and React compatibility jobs pass on `main`, CI calculates the next version,
+publishes to npm, pushes a version tag, and creates a GitHub release with generated notes.
+Branch pushes, tags, and pull requests never publish. Docs and tooling changes do not trigger a release.
+
+The squash-merged PR title declares the version change:
+
+| PR title                                                                     | Bump  | Example from 2.1.1 |
+| ---------------------------------------------------------------------------- | ----- | ------------------ |
+| `fix: repair dragging`, `perf: reduce overlay cost`, `revert: undo a change` | Patch | 2.1.2              |
+| `feat: add a mode`                                                           | Minor | 2.2.0              |
+| `feat!: replace props`, `fix(api)!: change defaults`                         | Major | 3.0.0              |
+| `docs:`, `test:`, `ci:`, `build:`, `chore:`, `refactor:`, `style:`           | None  | No release         |
+
+Scopes are optional. Any accepted type with `!` triggers a major release and requires a nonempty `BREAKING CHANGE:`
+footer in the PR description. Describe the incompatible change and how to migrate, for example:
+
+```text
+BREAKING CHANGE: oldLabel was removed. Replace it with labels.old in every ImageDiff call.
+```
+
+The footer appears in the GitHub release's breaking changes section. A breaking-change footer also requires `!` in
+the title, keeping the declared bump consistent with the generated notes.
+Changes since the last version tag are combined, and the largest bump wins.
+A failed release remains pending for a later successful run; publishing jobs run one at a time.
+The first automated release includes the unreleased commits since `v2.1.1`, including the overlay performance improvements.
+
+The required `release-policy` check rejects invalid titles, CI-skip markers, manual version changes, and library or
+published-metadata changes without a release-producing title. Source under `src/demo/` is exempt from the library rule.
+Reviewers must check the meaning of the change: removing props, changing defaults incompatibly, or dropping a supported
+React version requires `!`. CI cannot infer every breaking change from source.
+
+Squash merging preserves the PR title and description. CI validates both, including rejecting CI-skip markers in
+the description. The main branch rules require pull requests and passing checks, with no bypass actors.
+Keep the validated title and description when merging so release notes retain the migration details.
+
+Release-it reads the latest Git version tag rather than the checked-in package version. It updates `package.json`
+and the lockfile only in the publishing workspace; CI never commits version changes to `main`.
+GitHub releases contain the current changelog. The README changelog above records the earlier manual releases.
+
+### Configure trusted publishing
+
+In [npm package settings](https://www.npmjs.com/package/react-diff-image/access), add a GitHub Actions trusted publisher:
+
+- Owner: `ianobermiller`
+- Repository: `react-diff-image`
+- Workflow filename: `ci.yml`
+- Environment: `npm`
+- Allow direct publishing, rather than stage-only publishing.
+
+The GitHub `npm` environment permits deployments only from `main`. The publishing job uses OIDC and provenance;
+it needs no `NPM_TOKEN`. Keep npm token publishing disabled in the package settings.
+See [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) and
+[release-it trusted publishing](https://github.com/release-it/release-it/blob/main/docs/npm.md#trusted-publishing-oidc).
+
+To retry a failed release, rerun the failed CI job. If npm publishing succeeded but the tag push or GitHub release
+failed, first recover the tag and GitHub release at that exact commit and published version. npm versions are immutable;
+do not delete a published version or create a different tag to bypass the failure.
+
 ## Demo
 
 Since `ImageDiff` does not include any configuration controls, the demo is a simple showcase of the modes and options.
@@ -185,7 +245,7 @@ npm run demo:serve
 
 ## Run the benchmark
 
-Use Node.js 24.11 or newer. Install the root development dependencies and Chromium, then start the demo server.
+Use Node.js 24.15 or newer. Install the root development dependencies and Chromium, then start the demo server.
 
 ```sh
 npm ci

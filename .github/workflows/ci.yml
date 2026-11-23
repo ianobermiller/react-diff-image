@@ -43,3 +43,39 @@ jobs:
             - run: npm ci
             - run: npm run build
             - run: npm run ci:compatibility -- ${{ matrix.react }} ${{ matrix.types }}
+
+    release:
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        needs: [check, compatibility]
+        runs-on: ubuntu-latest
+        environment: npm
+        concurrency:
+            group: npm-release
+            cancel-in-progress: false
+        permissions:
+            contents: write
+            id-token: write
+        steps:
+            - uses: actions/checkout@v7
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v7
+              with:
+                  node-version: 24
+                  cache: npm
+            - run: npm ci
+            - run: npm exec -- playwright install --with-deps chromium
+            - run: git config user.name 'github-actions[bot]'
+            - run: git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            - run: node scripts/release-policy.mjs
+            - name: Skip superseded commits
+              id: current
+              run: |
+                  git fetch origin main
+                  if [ "$GITHUB_SHA" = "$(git rev-parse origin/main)" ]; then
+                      echo 'publish=true' >> "$GITHUB_OUTPUT"
+                  fi
+            - run: npm run release
+              if: steps.current.outputs.publish == 'true'
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
