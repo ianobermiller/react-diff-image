@@ -136,7 +136,7 @@
             }
         },
         {
-            "files": ["perf/**", "tests/*.mjs"],
+            "files": ["perf/**", "scripts/**", "tests/*.mjs"],
             "rules": {
                 "import/no-nodejs-modules": "off",
                 "node/no-sync": "off"
