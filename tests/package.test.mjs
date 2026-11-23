@@ -17,7 +17,7 @@ test("the published tarball supports CJS, ESM, TypeScript consumers, and client 
                 encoding: "utf8",
             }),
         );
-        const [pack] = packed;
+        const [pack] = Array.isArray(packed) ? packed : Object.values(packed);
         assert.ok(pack);
         assert.ok(
             pack.files.every(
