@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef } from "react";
 
 import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
 import { DiffImage, getDiffImageSize } from "./DiffImage";
@@ -7,8 +7,13 @@ import { Tag } from "./Tag";
 import { ModeProps } from "./types";
 
 export function Blend({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url }: ModeProps) {
-    const [percentage, setPercentage] = useState(0.5);
+    const percentageRef = useRef(0.5);
+    const newLayerRef = useRef<HTMLDivElement>(null);
+
     const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
+    const imageProps = { hasPadding, scale, size, url };
+
+    const p = percentageRef.current;
 
     return (
         <div style={{ width: diffImageSize.width }}>
@@ -27,8 +32,11 @@ export function Blend({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size,
                 </div>
 
                 <input
+                    defaultValue={p * 100}
                     onInput={(e) => {
-                        setPercentage(Number(e.currentTarget.value) / 100);
+                        const opacity = Number(e.currentTarget.value) / 100;
+                        percentageRef.current = opacity;
+                        if (newLayerRef.current) newLayerRef.current.style.opacity = String(opacity);
                     }}
                     style={{ width: 300 }}
                     type="range"
@@ -42,23 +50,12 @@ export function Blend({ hasPadding, newLabel, oldLabel, overlayUrl, scale, size,
             </div>
 
             <div style={{ ...diffImageSize, position: "relative" }}>
-                <DiffImage
-                    hasPadding={hasPadding}
-                    scale={scale}
-                    size={size}
-                    style={{ position: "absolute" }}
-                    type="old"
-                    url={url}
-                />
-
-                <DiffImage
-                    hasPadding={hasPadding}
-                    scale={scale}
-                    size={size}
-                    style={{ opacity: percentage, position: "absolute" }}
-                    type="new"
-                    url={url}
-                />
+                <div style={{ position: "absolute" }}>
+                    <DiffImage {...imageProps} type="old" />
+                </div>
+                <div ref={newLayerRef} style={{ opacity: p, position: "absolute" }}>
+                    <DiffImage {...imageProps} type="new" />
+                </div>
 
                 <OverlayImage hasPadding={hasPadding} overlayUrl={overlayUrl} scale={scale} size={size} />
             </div>

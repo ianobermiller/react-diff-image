@@ -1,10 +1,10 @@
 import type { CSSProperties, ReactNode } from "react";
 
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState } from "react";
 
 import { Blend } from "./Blend";
 import { BORDER_WIDTH, MODES, NEW_COLOR, OLD_COLOR, OVERLAY_COLOR, PADDING } from "./constants";
-import { getOverlay } from "./getOverlay";
+import { getCachedOverlay, getOverlay } from "./getOverlay";
 import { PixelDiff } from "./PixelDiff";
 import { SIDE_BY_SIDE_GAP, SideBySide } from "./SideBySide";
 import { SingleImage } from "./SingleImage";
@@ -66,6 +66,7 @@ export function ImageDiff({
 
     useLayoutEffect(() => {
         if (!rootRef.current || showFullSize) {
+            setMaxWidth(undefined);
             return;
         }
 
@@ -80,124 +81,71 @@ export function ImageDiff({
         return () => {
             resizeObserver.disconnect();
         };
-    }, []);
+    }, [showFullSize]);
 
     const img = useImage(url);
 
-    const overlayUrl = useMemo(() => (showOverlay ? getOverlay(img, OVERLAY_COLOR) : undefined), [showOverlay, img]);
+    const [, refreshOverlay] = useReducer((version: number) => version + 1, 0);
+    const overlayUrl = showOverlay && img ? getCachedOverlay(img) : undefined;
 
-    const size = img ? { height: img.naturalHeight, width: img.naturalWidth / 3 } : { height: 0, width: 0 };
+    // Schedule the first encode after the comparison renders.
+    useEffect(() => {
+        if (!showOverlay || !img || getCachedOverlay(img)) return;
 
-    const targetWidth = maxWidth
-        ? mode === "side-by-side"
-            ? Math.floor((maxWidth - BORDER_WIDTH * 4 - (hasPadding ? PADDING * 4 : 0) - SIDE_BY_SIDE_GAP) / 2)
-            : mode === "3-up"
-              ? Math.floor((maxWidth - BORDER_WIDTH * 6 - (hasPadding ? PADDING * 6 : 0) - THREE_UP_GAP * 2) / 3)
-              : maxWidth - BORDER_WIDTH * 2 - (hasPadding ? PADDING * 2 : 0)
-        : null;
+        const compute = () => {
+            getOverlay(img);
+            refreshOverlay();
+        };
 
-    const scale = targetWidth ? Math.min(1, targetWidth / size.width) : 1;
-    const appliedScale = showFullSize ? 1 : scale;
+        if (typeof requestIdleCallback === "function") {
+            const id = requestIdleCallback(compute, { timeout: 100 });
+            return () => {
+                cancelIdleCallback(id);
+            };
+        }
+
+        const timeout = setTimeout(compute, 0);
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, [showOverlay, img]);
+
+    const size = useMemo(
+        () => (img ? { height: img.naturalHeight, width: img.naturalWidth / 3 } : { height: 0, width: 0 }),
+        [img],
+    );
+
+    const panelEdges = 2 * (BORDER_WIDTH + (hasPadding ? PADDING : 0));
+    let targetWidth = 0;
+    if (maxWidth) {
+        targetWidth = maxWidth - panelEdges;
+        if (mode === "side-by-side") targetWidth = Math.floor((maxWidth - SIDE_BY_SIDE_GAP) / 2) - panelEdges;
+        if (mode === "3-up") targetWidth = Math.floor((maxWidth - 2 * THREE_UP_GAP) / 3) - panelEdges;
+    }
+
+    const scale = !showFullSize && targetWidth ? Math.min(1, targetWidth / size.width) : 1;
+    const modeProps = { diffLabel, hasPadding, newLabel, oldLabel, overlayUrl, scale, size, url };
 
     let comparison: ReactNode;
     switch (mode) {
         case "3-up":
-            comparison = (
-                <ThreeUp
-                    diffLabel={diffLabel}
-                    hasPadding={hasPadding}
-                    newLabel={newLabel}
-                    oldLabel={oldLabel}
-                    overlayUrl={overlayUrl}
-                    scale={appliedScale}
-                    size={size}
-                    url={url}
-                />
-            );
+            comparison = <ThreeUp {...modeProps} />;
             break;
         case "blend":
-            comparison = (
-                <Blend
-                    diffLabel={diffLabel}
-                    hasPadding={hasPadding}
-                    newLabel={newLabel}
-                    oldLabel={oldLabel}
-                    overlayUrl={overlayUrl}
-                    scale={appliedScale}
-                    size={size}
-                    url={url}
-                />
-            );
+            comparison = <Blend {...modeProps} />;
             break;
         case "new-only":
-            comparison = (
-                <SingleImage
-                    hasPadding={hasPadding}
-                    newLabel={newLabel}
-                    oldLabel={oldLabel}
-                    scale={appliedScale}
-                    size={size}
-                    type="new"
-                    url={url}
-                />
-            );
-            break;
         case "old-only":
-            comparison = (
-                <SingleImage
-                    hasPadding={hasPadding}
-                    newLabel={newLabel}
-                    oldLabel={oldLabel}
-                    scale={appliedScale}
-                    size={size}
-                    type="old"
-                    url={url}
-                />
-            );
+            comparison = <SingleImage {...modeProps} type={mode === "new-only" ? "new" : "old"} />;
             break;
         case "pixel-diff":
-            comparison = (
-                <PixelDiff
-                    diffLabel={diffLabel}
-                    hasPadding={hasPadding}
-                    newLabel={newLabel}
-                    oldLabel={oldLabel}
-                    overlayUrl={overlayUrl}
-                    scale={appliedScale}
-                    size={size}
-                    url={url}
-                />
-            );
+            comparison = <PixelDiff {...modeProps} />;
             break;
         case "side-by-side":
-            comparison = (
-                <SideBySide
-                    diffLabel={diffLabel}
-                    hasPadding={hasPadding}
-                    newLabel={newLabel}
-                    oldLabel={oldLabel}
-                    overlayUrl={overlayUrl}
-                    scale={appliedScale}
-                    size={size}
-                    url={url}
-                />
-            );
+            comparison = <SideBySide {...modeProps} />;
             break;
-        case "split":
         default:
-            comparison = (
-                <Split
-                    diffLabel={diffLabel}
-                    hasPadding={hasPadding}
-                    newLabel={newLabel}
-                    oldLabel={oldLabel}
-                    overlayUrl={overlayUrl}
-                    scale={appliedScale}
-                    showDivider={showDivider}
-                    size={size}
-                    url={url}
-                />
-            );
+            comparison = <Split {...modeProps} showDivider={showDivider} />;
             break;
     }
 

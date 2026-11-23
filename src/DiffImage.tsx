@@ -1,26 +1,26 @@
-import { type CSSProperties } from "react";
+import { type CSSProperties, memo, type Ref } from "react";
 
 import { BORDER_WIDTH, NEW_COLOR, OLD_COLOR, PADDING } from "./constants";
 import { ModeProps } from "./types";
 
 interface Props extends Pick<ModeProps, "hasPadding" | "scale" | "size" | "url"> {
+    outerRef?: Ref<HTMLDivElement>;
     style?: CSSProperties;
     type: "diff" | "new" | "old";
 }
 
-const CHECKERBOARD_COLOR = "#ccc";
-const CHECKERBOARD_ALTERNATE_COLOR = "#fff";
-const CHECKERBOARD_SIZE = 10;
+const CHECKERBOARD_STYLES = getCheckerboardStyles("#ccc", "#fff", 10);
 
-export function DiffImage({ hasPadding, scale, size, style, type, url }: Props) {
+export const DiffImage = memo(function DiffImage({ hasPadding, outerRef, scale, size, style, type, url }: Props) {
     const index = type === "old" ? 0 : type === "new" ? 2 : 1;
     const borderColor = type === "old" ? OLD_COLOR : type === "new" ? NEW_COLOR : "#DFE1E6";
     const outerSize = getDiffImageSize({ hasPadding, scale, size });
 
     return (
         <div
+            ref={outerRef}
             style={{
-                ...getCheckerboardStyles(CHECKERBOARD_COLOR, CHECKERBOARD_ALTERNATE_COLOR, CHECKERBOARD_SIZE),
+                ...CHECKERBOARD_STYLES,
                 border: `${BORDER_WIDTH}px solid ${borderColor}`,
                 boxSizing: "border-box",
                 height: outerSize.height,
@@ -32,19 +32,32 @@ export function DiffImage({ hasPadding, scale, size, style, type, url }: Props) 
         >
             <div
                 style={{
-                    backgroundImage: `url(${url})`,
-                    backgroundPositionX: `-${size.width * index}px`,
-                    backgroundRepeat: "no-repeat",
-                    backgroundSize: `${size.width * 3}px ${size.height}px`,
                     height: size.height,
+                    overflow: "hidden",
+                    position: "relative",
                     transform: `scale(${scale})`,
                     transformOrigin: "top left",
                     width: size.width,
                 }}
-            ></div>
+            >
+                <img
+                    alt=""
+                    crossOrigin="anonymous"
+                    draggable={false}
+                    src={url}
+                    style={{
+                        height: size.height,
+                        left: -size.width * index,
+                        maxWidth: "none",
+                        position: "absolute",
+                        top: 0,
+                        width: size.width * 3,
+                    }}
+                />
+            </div>
         </div>
     );
-}
+});
 
 export function getDiffImageSize({ hasPadding, scale, size }: Pick<ModeProps, "hasPadding" | "scale" | "size">) {
     const extra = (hasPadding ? PADDING * 2 : 0) + BORDER_WIDTH * 2;

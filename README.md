@@ -76,6 +76,12 @@ Defaults to false. Adds padding around the images with a standard checkerboard p
 
 Optional styles for the root wrapper `div`.
 
+## Performance
+
+- The overlay scans the full-resolution diff for changed pixels. It deduplicates highlight centers, fills dense interiors in horizontal runs, and encodes the result at half resolution. The first render can finish before the encode starts, and later toggles reuse the overlay for the loaded image.
+- The image loader and visible panels use the same browser request mode so they can share the source image. The cache keeps up to eight recently used sprites within a 128 MiB estimated decoded-size budget.
+- Split and blend update clipping and opacity directly during pointer and slider input, avoiding a React render for each movement.
+
 ## Changelog
 
 ### 2.1.1
@@ -118,3 +124,22 @@ npm run demo:watch
 npm run demo:serve
 # open http://localhost:3000
 ```
+
+## Run the benchmark
+
+Use Node.js 20 or newer. Install the root development dependencies and Chromium, then start the demo server.
+
+```sh
+npm ci
+npm exec -- playwright-core install chromium
+npm run demo:build -- --env.NODE_ENV production
+node perf/server.mjs
+```
+
+Run the benchmark in a second terminal.
+
+```sh
+node perf/measure.mjs http://127.0.0.1:8765 - current
+```
+
+The script reports first-overlay and repeat-overlay times and verifies that split and blend update the expected styles. Pass a directory in place of `-` to save screenshots. Set `CHROMIUM_EXECUTABLE_PATH` to use an existing Chromium binary. To compare builds, alternate runs with the same browser and image fixture.

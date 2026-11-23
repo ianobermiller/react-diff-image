@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { type MouseEvent, useRef } from "react";
 
 import { clamp } from "./clamp";
 import { NEW_BG, NEW_COLOR, OLD_BG, OLD_COLOR } from "./constants";
@@ -17,16 +17,31 @@ export function Split({
     size,
     url,
 }: ModeProps & { showDivider: boolean }) {
-    const [percentage, setPercentage] = useState(0.5);
-    const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
+    const percentageRef = useRef(0.5);
+    const oldLayerRef = useRef<HTMLDivElement>(null);
+    const newLayerRef = useRef<HTMLDivElement>(null);
+    const dividerRef = useRef<HTMLDivElement>(null);
 
-    const handleMouseMove = useCallback(
-        (e: React.MouseEvent<HTMLDivElement>): void => {
-            const delta = e.clientX - e.currentTarget.getBoundingClientRect().x;
-            setPercentage(delta / diffImageSize.width);
-        },
-        [diffImageSize.width],
-    );
+    const diffImageSize = getDiffImageSize({ hasPadding, scale, size });
+    const imageProps = { hasPadding, scale, size, url };
+
+    function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
+        const rect = e.currentTarget.getBoundingClientRect();
+        const p = clamp((e.clientX - rect.left) / rect.width, 0, 1);
+        percentageRef.current = p;
+
+        if (oldLayerRef.current) {
+            oldLayerRef.current.style.clipPath = `inset(0 ${(1 - p) * 100}% 0 0)`;
+        }
+        if (newLayerRef.current) {
+            newLayerRef.current.style.clipPath = `inset(0 0 0 ${p * 100}%)`;
+        }
+        if (dividerRef.current) {
+            dividerRef.current.style.left = `calc(${p * 100}% - 2px)`;
+        }
+    }
+
+    const p = percentageRef.current;
 
     return (
         <div
@@ -48,41 +63,38 @@ export function Split({
 
             <div onMouseMove={handleMouseMove} style={{ ...diffImageSize, position: "relative" }}>
                 <DiffImage
-                    hasPadding={hasPadding}
-                    scale={scale}
-                    size={size}
+                    {...imageProps}
+                    outerRef={oldLayerRef}
                     style={{
-                        clipPath: `inset(0 ${(1 - percentage) * 100}% 0 0)`,
+                        clipPath: `inset(0 ${(1 - p) * 100}% 0 0)`,
                         left: 0,
                         position: "absolute",
                     }}
                     type="old"
-                    url={url}
                 />
 
                 <DiffImage
-                    hasPadding={hasPadding}
-                    scale={scale}
-                    size={size}
+                    {...imageProps}
+                    outerRef={newLayerRef}
                     style={{
-                        clipPath: `inset(0 0 0 ${percentage * 100}%)`,
+                        clipPath: `inset(0 0 0 ${p * 100}%)`,
                         position: "absolute",
                         right: 0,
                     }}
                     type="new"
-                    url={url}
                 />
 
                 <OverlayImage hasPadding={hasPadding} overlayUrl={overlayUrl} scale={scale} size={size} />
 
                 {showDivider && (
                     <div
+                        ref={dividerRef}
                         style={{
                             background: "orange",
                             borderLeft: "1px solid white",
                             borderRight: "1px solid white",
                             bottom: 0,
-                            left: `calc(${clamp(percentage * 100, 0, 100)}% - 2px)`,
+                            left: `calc(${p * 100}% - 2px)`,
                             position: "absolute",
                             top: 0,
                             width: 2,

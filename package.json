@@ -41,6 +41,7 @@
         "eslint-plugin-perfectionist": "^4.2.0",
         "eslint-plugin-react": "^7.37.2",
         "globals": "^15.13.0",
+        "playwright-core": "1.65.1",
         "prettier": "^3.4.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
