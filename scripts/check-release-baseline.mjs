@@ -66,4 +66,4 @@ async function verify(attempts) {
     }
 }
 
-if (import.meta.main) await verify(process.argv.includes("--retry") ? 6 : 0);
+if (import.meta.main) await verify(process.argv.includes("--retry") ? 60 : 0);

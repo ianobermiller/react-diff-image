@@ -21,7 +21,8 @@
     },
     "plugins": {
         "@release-it/conventional-changelog": {
-            "preset": { "name": "conventionalcommits" }
+            "preset": { "name": "conventionalcommits" },
+            "writerOpts": { "generateOn": null }
         }
     },
     "hooks": {
