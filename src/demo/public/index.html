@@ -5,16 +5,170 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>react-diff-image demo</title>
         <style>
+            :root {
+                color-scheme: light dark;
+                font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+                color: #243047;
+                background: #f5f6f8;
+                --surface: #fff;
+                --border: #dfe3e9;
+                --muted: #637086;
+                --accent: #4558c9;
+                --selected: #eef0ff;
+            }
+
             body {
                 margin: 0;
+                padding: 40px 24px;
+                line-height: 1.5;
+            }
+
+            .demo {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .demo-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 24px;
+                margin-bottom: 28px;
+            }
+
+            h1 {
+                margin: 0 0 6px;
+                font-size: 26px;
+                font-weight: 650;
+                letter-spacing: -0.8px;
+            }
+
+            p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 14px;
+            }
+
+            a {
+                color: var(--accent);
+                font-size: 14px;
+                text-underline-offset: 4px;
+                white-space: nowrap;
+            }
+
+            .demo-controls,
+            .demo-preview {
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                background: var(--surface);
+                box-shadow: 0 2px 6px #00000004;
+            }
+
+            .demo-controls {
                 padding: 20px;
-                font-family: system-ui;
+                margin-bottom: 20px;
+            }
+
+            fieldset {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                min-width: 0;
+                margin: 0;
+                padding: 0;
+                border: 0;
+            }
+
+            legend {
+                margin-bottom: 10px;
+                padding: 0;
+                color: var(--muted);
+                font-size: 11px;
+                font-weight: 650;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+            }
+
+            label {
+                display: inline-flex;
+                align-items: center;
+                gap: 7px;
+                font-size: 13px;
+                cursor: pointer;
+            }
+
+            input {
+                margin: 0;
+                accent-color: var(--accent);
+            }
+
+            .demo-mode {
+                padding: 7px 12px;
+                border: 1px solid var(--border);
+                border-radius: 6px;
+            }
+
+            .demo-mode:hover {
+                background: var(--selected);
+            }
+
+            .demo-mode:has(:checked) {
+                color: var(--accent);
+                border-color: var(--accent);
+                background: var(--selected);
+            }
+
+            :focus-visible {
+                outline: 2px solid var(--accent);
+                outline-offset: 4px;
+            }
+
+            .demo-options {
+                gap: 12px 24px;
+                margin-top: 18px;
+                padding-top: 16px;
+                border-top: 1px solid var(--border);
+            }
+
+            .demo-options legend {
+                float: left;
+                width: 100%;
+            }
+
+            .demo-preview {
+                overflow: hidden;
+                padding: 16px;
+            }
+
+            @media (max-width: 600px) {
+                body {
+                    padding: 24px 12px;
+                }
+
+                .demo-header {
+                    align-items: flex-start;
+                    flex-direction: column;
+                    gap: 12px;
+                }
+
+                .demo-controls {
+                    padding: 16px;
+                }
+
+                .demo-preview {
+                    padding: 8px;
+                }
             }
 
             @media (prefers-color-scheme: dark) {
-                body {
-                    background-color: #333;
-                    color: #fff;
+                :root {
+                    color: #e3e7ef;
+                    background: #171b23;
+                    --surface: #202631;
+                    --border: #374151;
+                    --muted: #a0adc0;
+                    --accent: #a5b0ff;
+                    --selected: #2d3450;
                 }
             }
         </style>
